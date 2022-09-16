@@ -6,12 +6,14 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="coding-xt-sso-dao" />
+        <module name="coding-xt-sso-service-impl" />
+        <module name="coding-xt-sso-domain" />
+        <module name="coding-xt-sso-model" />
+        <module name="coding-xt-sso-api" />
         <module name="coding-xt-common" />
-        <module name="coding-xt-sso" />
+        <module name="coding-xt-sso-service" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="coding-xt-sso-api" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>
