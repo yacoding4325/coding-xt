@@ -16,4 +16,16 @@
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.coding</groupId>
+            <artifactId>coding-xt-sso-model</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.coding</groupId>
+            <artifactId>coding-xt-common</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>
