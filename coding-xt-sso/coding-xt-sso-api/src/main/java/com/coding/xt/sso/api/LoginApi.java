@@ -1,6 +1,5 @@
 package com.coding.xt.sso.api;
 
-
 import com.coding.xt.common.model.CallResult;
 import com.coding.xt.sso.model.params.LoginParam;
 import com.coding.xt.sso.service.LoginService;
