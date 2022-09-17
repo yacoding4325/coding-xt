@@ -26,6 +26,11 @@
             <groupId>com.coding</groupId>
             <artifactId>coding-xt-sso-domain</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-mp</artifactId>
+            <version>3.8.0</version>
+        </dependency>
     </dependencies>
 
 </project>

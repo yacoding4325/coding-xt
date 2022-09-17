@@ -81,5 +81,11 @@
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-mp</artifactId>
+            <version>3.8.0</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 </project>
