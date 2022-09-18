@@ -25,12 +25,6 @@ import org.joda.time.DateTime;
 public class LoginServiceImpl extends AbstractService implements LoginService {
 
     @Autowired
-    private WxMpService wxMpService;
-
-    @Autowired
-    private WxOpenConfig wxOpenConfig;
-
-    @Autowired
     private LoginDomainRepository loginDomainRepository;
 
     @Override
@@ -73,12 +67,28 @@ public class LoginServiceImpl extends AbstractService implements LoginService {
 
     @Override
     public String authorize() {
-        return null;
+        LoginDomain loginDomain = loginDomainRepository.createDomain(new LoginParam());
+        return loginDomain.buildGzhUrl();
     }
 
     @Override
+    @Transactional
     public CallResult wxGzhLoginCallBack(LoginParam loginParam) {
-        return null;
-    }
+        LoginDomain loginDomain = loginDomainRepository.createDomain(loginParam);
+        //带有事务的执行操作
+        return this.serviceTemplate.execute(new AbstractTemplateAction<Object>(){
 
+            @Override
+            public CallResult<Object> checkBiz() {
+                //检查业务参数
+                return loginDomain.checkWxLoginCallBackBiz();
+            }
+
+            @Override
+            public CallResult<Object> doAction() {
+                //写业务逻辑的
+                return loginDomain.wxGzhLoginCallBack();
+            }
+        });
+    }
 }

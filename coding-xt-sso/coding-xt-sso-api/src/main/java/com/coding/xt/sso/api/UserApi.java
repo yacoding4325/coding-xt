@@ -4,6 +4,7 @@ import com.coding.xt.common.model.CallResult;
 import com.coding.xt.sso.model.params.UserParam;
 import com.coding.xt.sso.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,9 +20,8 @@ public class UserApi {
     private UserService userService;
 
 
-    @RequestMapping("userInfo")
+    @PostMapping("userInfo")
     public CallResult userInfo(){
-        UserParam userParam = new UserParam();
-        return userService.userInfo(userParam);
+        return userService.userInfo();
     }
 }

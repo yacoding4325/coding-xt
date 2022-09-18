@@ -19,9 +19,10 @@ public class UserServiceImpl extends AbstractService implements UserService {
     @Autowired
     private UserDomainRepository userDomainRepository;
 
+
     @Override
-    public CallResult userInfo(UserParam userParam) {
-        UserDomain userDomain = userDomainRepository.createDomain(userParam);
+    public CallResult userInfo() {
+        UserDomain userDomain = userDomainRepository.createDomain(new UserParam());
         return this.serviceTemplate.executeQuery(new AbstractTemplateAction<Object>() {
             @Override
             public CallResult<Object> doAction() {
@@ -29,5 +30,4 @@ public class UserServiceImpl extends AbstractService implements UserService {
             }
         });
     }
-
 }
