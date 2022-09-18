@@ -20,22 +20,22 @@ public class TokenDomain {
         this.tokenDomainRepository = tokenDomainRepository;
     }
 
-//    public Long checkToken(String token) {
-//        /**
-//         * 1. 检测token字符串是否合法
-//         * 2. 检测redis是否有此token
-//         */
-//        try {
+    public Long checkToken(String token) {
+        /**
+         * 1. 检测token字符串是否合法
+         * 2. 检测redis是否有此token
+         */
+        try {
 //            JwtUtil.parseJWT(token,LoginDomain.secretKey);
-//            String userIdStr = tokenDomainRepository.redisTemplate.opsForValue().get(RedisKey.TOKEN + token);
-//            if (StringUtils.isBlank(userIdStr)){
-//                return null;
-//            }
-//            return Long.parseLong(userIdStr);
-//        }catch (Exception e){
-//            e.printStackTrace();
-//            log.error("checkToken error:{}",e.getMessage(),e);
-//            return null;
-//        }
-//    }
+            String userIdStr = tokenDomainRepository.redisTemplate.opsForValue().get(RedisKey.TOKEN + token);
+            if (StringUtils.isBlank(userIdStr)){
+                return null;
+            }
+            return Long.parseLong(userIdStr);
+        }catch (Exception e){
+            e.printStackTrace();
+            log.error("checkToken error:{}",e.getMessage(),e);
+            return null;
+        }
+    }
 }
