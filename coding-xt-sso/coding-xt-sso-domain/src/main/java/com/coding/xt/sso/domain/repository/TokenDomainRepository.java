@@ -15,7 +15,7 @@ public class TokenDomainRepository {
     @Autowired
     public StringRedisTemplate redisTemplate;
 
-    public TokenDomain createDomain(){
+    public TokenDomain createDomain() {
         return new TokenDomain(this);
     }
 }

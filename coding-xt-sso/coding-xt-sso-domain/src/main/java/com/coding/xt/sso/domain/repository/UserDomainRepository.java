@@ -43,6 +43,6 @@ public class UserDomainRepository {
     }
 
     public User findUserById(Long userId) {
-        return null;
+        return userMapper.selectById(userId);
     }
 }
