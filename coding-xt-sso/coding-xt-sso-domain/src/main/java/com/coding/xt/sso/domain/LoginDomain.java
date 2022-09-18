@@ -23,9 +23,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * 专门处理和登录相关的操作
  */
-/**
- * 专门处理和登录相关的操作
- */
+
 public class LoginDomain {
 
     private LoginDomainRepository loginDomainRepository;
