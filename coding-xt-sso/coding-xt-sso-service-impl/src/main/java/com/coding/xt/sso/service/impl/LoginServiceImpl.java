@@ -30,19 +30,45 @@ public class LoginServiceImpl extends AbstractService implements LoginService {
     @Autowired
     private WxOpenConfig wxOpenConfig;
 
+    @Autowired
+    private LoginDomainRepository loginDomainRepository;
+
     @Override
     public CallResult getQRCodeUrl() {
-        // 生成 state 参数，用于防止 csrf//得到需要的
-        String date = new DateTime().toString("yyyyMMddHHmmss");
-        String state = DigestUtils.md5Hex(wxOpenConfig.csrfKey+date);
-        String url = wxMpService.buildQrConnectUrl(wxOpenConfig.redirectUrl, wxOpenConfig.scope, state);
-        return CallResult.success(url);
-
+//        // 生成 state 参数，用于防止 csrf//得到需要的
+//        String date = new DateTime().toString("yyyyMMddHHmmss");
+//        String state = DigestUtils.md5Hex(wxOpenConfig.csrfKey+date);
+//        String url = wxMpService.buildQrConnectUrl(wxOpenConfig.redirectUrl, wxOpenConfig.scope, state);
+//        return CallResult.success(url);
+        LoginDomain loginDomain = loginDomainRepository.createDomain(new LoginParam());
+        return this.serviceTemplate.executeQuery(new AbstractTemplateAction<Object>(){
+            @Override
+            public CallResult<Object> doAction() {
+                return loginDomain.buildQrConnectUrl();
+            }
+        });
     }
 
     @Override
+    @Transactional
+    //微信接口回调
     public CallResult wxLoginCallBack(LoginParam loginParam) {
-        return null;
+        LoginDomain loginDomain = loginDomainRepository.createDomain(loginParam);
+        //带有事务的执行操作
+        return this.serviceTemplate.execute(new AbstractTemplateAction<Object>() {
+
+            @Override
+            public CallResult<Object> checkBiz() {
+                //检查业务参数
+                return loginDomain.checkWxLoginCallBackBiz();
+            }
+
+            @Override
+            public CallResult<Object> doAction() {
+                //写业务逻辑的
+                return loginDomain.wxLoginCallBack();
+            }
+        });
     }
 
     @Override
