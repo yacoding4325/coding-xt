@@ -7,13 +7,19 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="coding-xt-web-api" />
+        <module name="coding-xt-sso-domain" />
+        <module name="coding-xt-web-service-impl" />
+        <module name="coding-xt-sso-service" />
         <module name="coding-xt-sso-dao" />
         <module name="coding-xt-sso-service-impl" />
-        <module name="coding-xt-sso-domain" />
+        <module name="coding-xt-web-model" />
+        <module name="coding-xt-web-service" />
         <module name="coding-xt-sso-model" />
         <module name="coding-xt-sso-api" />
         <module name="coding-xt-common" />
-        <module name="coding-xt-sso-service" />
+        <module name="coding-xt-web-domain" />
+        <module name="coding-xt-web-dao" />
       </profile>
     </annotationProcessing>
   </component>
@@ -26,6 +32,13 @@
       <module name="coding-xt-sso-model" options="-parameters" />
       <module name="coding-xt-sso-service" options="-parameters" />
       <module name="coding-xt-sso-service-impl" options="-parameters" />
+      <module name="coding-xt-web" options="-parameters" />
+      <module name="coding-xt-web-api" options="-parameters" />
+      <module name="coding-xt-web-dao" options="-parameters" />
+      <module name="coding-xt-web-domain" options="-parameters" />
+      <module name="coding-xt-web-model" options="-parameters" />
+      <module name="coding-xt-web-service" options="-parameters" />
+      <module name="coding-xt-web-service-impl" options="-parameters" />
     </option>
   </component>
 </project>

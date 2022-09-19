@@ -8,6 +8,12 @@
     <file url="file://$PROJECT_DIR$/coding-xt-sso/coding-xt-sso-model/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/coding-xt-sso/coding-xt-sso-service-impl/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/coding-xt-sso/coding-xt-sso-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/coding-xt-web/coding-xt-web-api/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/coding-xt-web/coding-xt-web-dao/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/coding-xt-web/coding-xt-web-domain/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/coding-xt-web/coding-xt-web-model/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/coding-xt-web/coding-xt-web-service-impl/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/coding-xt-web/coding-xt-web-service/src/main/java" charset="UTF-8" />
     <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>

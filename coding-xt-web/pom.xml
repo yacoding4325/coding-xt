@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>coding-xt</artifactId>
+        <groupId>com.coding</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>coding-xt-web</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>coding-xt-web-api</module>
+        <module>coding-xt-web-dao</module>
+        <module>coding-xt-web-domain</module>
+        <module>coding-xt-web-model</module>
+        <module>coding-xt-web-service</module>
+        <module>coding-xt-web-service-impl</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.coding</groupId>
+                <artifactId>coding-xt-web-service-impl</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.coding</groupId>
+                <artifactId>coding-xt-web-service</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.coding</groupId>
+                <artifactId>coding-xt-web-model</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.coding</groupId>
+                <artifactId>coding-xt-web-domain</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.coding</groupId>
+                <artifactId>coding-xt-web-dao</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+            <dependency>
+                <groupId>com.coding</groupId>
+                <artifactId>coding-xt-common</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

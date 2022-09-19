@@ -11,6 +11,7 @@
     <modules>
         <module>coding-xt-common</module>
         <module>coding-xt-sso</module>
+        <module>coding-xt-web</module>
     </modules>
 
     <parent>
@@ -19,6 +20,12 @@
         <version>2.5.0</version>
     </parent>
 
+    <properties>
+        <java.version>1.8</java.version>
+        <shardingsphere.version>5.0.0-beta</shardingsphere.version>
+        <weixin.version>3.8.0</weixin.version>
+        <dubbo.version>2.7.8</dubbo.version>
+    </properties>
 
     <!--管理依赖  子模块在使用jar包的时候，不用加版本号-->
     <dependencyManagement>
