@@ -26,7 +26,7 @@ public class TokenDomain {
          * 2. 检测redis是否有此token
          */
         try {
-            //JwtUtil.parseJWT(token,LoginDomain.secretKey);
+            JwtUtil.parseJWT(token, LoginDomain.secretKey);
             String userIdStr = tokenDomainRepository.redisTemplate.opsForValue().get(RedisKey.TOKEN + token);
             if (StringUtils.isBlank(userIdStr)){
                 return null;
