@@ -8,6 +8,6 @@ import org.springframework.context.annotation.Configuration;
  * @create 2022-09-19 下午 9:07
  */
 @Configuration
-@ComponentScan({"com.coding.xt.common.service"})
+@ComponentScan({"com.coding.xt.common.cache","com.coding.xt.common.service"})
 public class InitConfig {
 }
