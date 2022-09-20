@@ -21,16 +21,14 @@ import java.util.List;
  */
 //新闻域
 public class NewsDomain {
-
     private NewsDomainRepository newsDomainRepository;
     private NewsParam newsParam;
-
-    public NewsDomain(NewsDomainRepository newsDomainRepository,NewsParam newsParam) {
+    public NewsDomain(NewsDomainRepository newsDomainRepository, NewsParam newsParam) {
         this.newsDomainRepository = newsDomainRepository;
         this.newsParam = newsParam;
     }
-    public NewsModel copy(News news) {
-        if (news == null) {
+    public NewsModel copy(News news){
+        if (news == null){
             return null;
         }
         NewsModel newsModel = new NewsModel();
@@ -45,7 +43,6 @@ public class NewsDomain {
             }
         }
         return newsModel;
-
     }
 
     public List<NewsModel> copyList(List<News> newsList){
@@ -57,18 +54,15 @@ public class NewsDomain {
     }
 
     public CallResult<Object> checkNewsListParam() {
-        //检查
-        /*
-        1.分页参数 pageSize 大于5 pageSize = 5
-        2.tab是否合法
-         */
+        //检查 1. 分页参数 pagesize 大于5 pagesize=5
+        //2. tab是否合法
         int pageSize = newsParam.getPageSize();
         if (pageSize > 5){
             newsParam.setPageSize(5);
         }
         int page = newsParam.getPage();
         if (page <= 0){
-            return CallResult.fail(BusinessCodeEnum.CHECK_PARAM_NO_RESULT.getCode(),"param error: tab is null");
+            return CallResult.fail(BusinessCodeEnum.CHECK_PARAM_NO_RESULT.getCode(),"参数不正确");
         }
         Integer tab = newsParam.getTab();
         if (TabEnum.valueOfCode(tab) == null){
@@ -77,25 +71,26 @@ public class NewsDomain {
         return CallResult.success();
     }
 
-    public CallResult<Object> newsList(boolean isDetail) {
-        int page = this.newsParam.getPage();
-        int pageSize = this.newsParam.getPageSize();
-        Integer tab = this.newsParam.getTab();
-        Page<News> newsPage = this.newsDomainRepository.findNewsListByTab(page,pageSize,tab,isDetail);
-        ListPageModel<NewsModel> listPageModel = new ListPageModel<>();
-        List<News> result = newsPage.getRecords();
-        List<NewsModel> newsModelList = copyList(result);
+    public CallResult<Object> newsList() {
+        int page = newsParam.getPage();
+        int pageSize = newsParam.getPageSize();
+        Integer tab = newsParam.getTab();
+        Page<News> newsPage = this.newsDomainRepository.findNewsListByTab(page,pageSize,tab);
+        List<News> records = newsPage.getRecords();
+
+        List<NewsModel> newsModelList = copyList(records);
+        //分页模型，所有的分页 都需要返回此模型 固定模式
+        ListPageModel listPageModel = new ListPageModel<>();
         listPageModel.setList(newsModelList);
         listPageModel.setPage(page);
         listPageModel.setPageSize(pageSize);
-        listPageModel.setPageCount(newsPage.getPages());
         listPageModel.setSize(newsPage.getTotal());
+        listPageModel.setPageCount(newsPage.getPages());
         return CallResult.success(listPageModel);
     }
 
     public CallResult<Object> findNewsById() {
-        Long id = this.newsParam.getId();
-        News news = this.newsDomainRepository.findNewsDetailById(id);
+        News news = this.newsDomainRepository.findNewsById(newsParam.getId());
         NewsModel newsModel = copy(news);
         return CallResult.success(newsModel);
     }
