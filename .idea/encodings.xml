@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
+    <file url="file://$PROJECT_DIR$/coding-xt-admin/coding-xt-admin-api/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/coding-xt-admin/coding-xt-admin-dao/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/coding-xt-admin/coding-xt-admin-domain/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/coding-xt-admin/coding-xt-admin-model/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/coding-xt-admin/coding-xt-admin-service-impl/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/coding-xt-admin/coding-xt-admin-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/coding-xt-common-pojo/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/coding-xt-common/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/coding-xt-sso/coding-xt-sso-api/src/main/java" charset="UTF-8" />

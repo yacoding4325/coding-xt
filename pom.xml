@@ -13,6 +13,7 @@
         <module>coding-xt-sso</module>
         <module>coding-xt-web</module>
         <module>coding-xt-common-pojo</module>
+        <module>coding-xt-admin</module>
     </modules>
 
     <parent>

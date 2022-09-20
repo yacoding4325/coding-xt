@@ -7,9 +7,14 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="coding-xt-admin-api" />
         <module name="coding-xt-web-api" />
         <module name="coding-xt-sso-domain" />
         <module name="coding-xt-web-service-impl" />
+        <module name="coding-xt-admin-service" />
+        <module name="coding-xt-admin-domain" />
+        <module name="coding-xt-admin-service-impl" />
+        <module name="coding-xt-admin-dao" />
         <module name="coding-xt-sso-service" />
         <module name="coding-xt-sso-dao" />
         <module name="coding-xt-common-pojo" />
@@ -18,6 +23,7 @@
         <module name="coding-xt-web-service" />
         <module name="coding-xt-sso-model" />
         <module name="coding-xt-sso-api" />
+        <module name="coding-xt-admin-model" />
         <module name="coding-xt-common" />
         <module name="coding-xt-web-domain" />
         <module name="coding-xt-web-dao" />
@@ -26,6 +32,13 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="coding-xt-admin" options="-parameters" />
+      <module name="coding-xt-admin-api" options="-parameters" />
+      <module name="coding-xt-admin-dao" options="-parameters" />
+      <module name="coding-xt-admin-domain" options="-parameters" />
+      <module name="coding-xt-admin-model" options="-parameters" />
+      <module name="coding-xt-admin-service" options="-parameters" />
+      <module name="coding-xt-admin-service-impl" options="-parameters" />
       <module name="coding-xt-common" options="-parameters" />
       <module name="coding-xt-common-pojo" options="-parameters" />
       <module name="coding-xt-sso-api" options="-parameters" />
