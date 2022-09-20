@@ -11,9 +11,19 @@
 
     <artifactId>coding-xt-admin-domain</artifactId>
 
-    <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
-    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>com.coding</groupId>
+            <artifactId>coding-xt-admin-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.coding</groupId>
+            <artifactId>coding-xt-admin-dao</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.coding</groupId>
+            <artifactId>coding-xt-common</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>
