@@ -1,5 +1,6 @@
 package com.coding.xt.web.api;
 
+import com.coding.xt.common.cache.Cache;
 import com.coding.xt.common.model.CallResult;
 import com.coding.xt.model.service.NewsService;
 import com.coding.xt.web.model.params.NewsParam;
@@ -18,11 +19,13 @@ public class NewsApi {
     private NewsService newsService;
 
     @PostMapping("newsList")
+    @Cache(name = "newsList",time = 2*60)
     public CallResult newsList(@RequestBody NewsParam newsParam){
         return newsService.newsList(newsParam);
     }
 
     @PostMapping("detail")
+    @Cache(name = "newsDetail",time = 30)
     public CallResult news(@RequestBody NewsParam newsParam){
         return newsService.findNewsById(newsParam);
     }
