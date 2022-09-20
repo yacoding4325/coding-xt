@@ -12,6 +12,7 @@
         <module name="coding-xt-web-service-impl" />
         <module name="coding-xt-sso-service" />
         <module name="coding-xt-sso-dao" />
+        <module name="coding-xt-common-pojo" />
         <module name="coding-xt-sso-service-impl" />
         <module name="coding-xt-web-model" />
         <module name="coding-xt-web-service" />
@@ -26,6 +27,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="coding-xt-common" options="-parameters" />
+      <module name="coding-xt-common-pojo" options="-parameters" />
       <module name="coding-xt-sso-api" options="-parameters" />
       <module name="coding-xt-sso-dao" options="-parameters" />
       <module name="coding-xt-sso-domain" options="-parameters" />

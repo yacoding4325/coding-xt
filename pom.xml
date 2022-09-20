@@ -12,6 +12,7 @@
         <module>coding-xt-common</module>
         <module>coding-xt-sso</module>
         <module>coding-xt-web</module>
+        <module>coding-xt-common-pojo</module>
     </modules>
 
     <parent>
