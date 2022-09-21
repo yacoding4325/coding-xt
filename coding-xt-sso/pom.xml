@@ -61,6 +61,12 @@
                 <artifactId>coding-xt-common</artifactId>
                 <version>1.0-SNAPSHOT</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.apache.shardingsphere</groupId>
+                <artifactId>shardingsphere-jdbc-core-spring-boot-starter</artifactId>
+                <version>5.0.0-beta</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
