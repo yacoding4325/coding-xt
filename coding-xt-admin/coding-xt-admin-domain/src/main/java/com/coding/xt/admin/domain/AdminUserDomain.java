@@ -3,7 +3,7 @@ package com.coding.xt.admin.domain;
 import com.coding.xt.admin.dao.data.AdminUser;
 import com.coding.xt.admin.domain.repository.AdminUserDomainRepository;
 import com.coding.xt.admin.model.AdminUserModel;
-import com.coding.xt.admin.model.params.AdminUserParam;
+import com.coding.xt.admin.params.AdminUserParam;
 import org.springframework.beans.BeanUtils;
 
 /**

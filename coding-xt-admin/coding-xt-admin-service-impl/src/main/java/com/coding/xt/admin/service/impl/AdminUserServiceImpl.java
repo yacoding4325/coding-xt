@@ -3,7 +3,7 @@ package com.coding.xt.admin.service.impl;
 import com.coding.xt.admin.domain.AdminUserDomain;
 import com.coding.xt.admin.domain.repository.AdminUserDomainRepository;
 import com.coding.xt.admin.model.AdminUserModel;
-import com.coding.xt.admin.model.params.AdminUserParam;
+import com.coding.xt.admin.params.AdminUserParam;
 import com.coding.xt.admin.service.AdminUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 

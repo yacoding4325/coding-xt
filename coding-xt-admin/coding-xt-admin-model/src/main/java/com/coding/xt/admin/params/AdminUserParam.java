@@ -1,4 +1,4 @@
-package com.coding.xt.admin.model.params;
+package com.coding.xt.admin.params;
 
 import lombok.Data;
 

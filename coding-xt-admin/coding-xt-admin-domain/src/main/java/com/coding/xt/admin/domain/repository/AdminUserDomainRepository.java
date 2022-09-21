@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.coding.xt.admin.dao.AdminUserMapper;
 import com.coding.xt.admin.dao.data.AdminUser;
 import com.coding.xt.admin.domain.AdminUserDomain;
-import com.coding.xt.admin.model.params.AdminUserParam;
+import com.coding.xt.admin.params.AdminUserParam;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
