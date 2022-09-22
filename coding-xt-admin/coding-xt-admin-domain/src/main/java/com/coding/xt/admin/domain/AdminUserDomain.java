@@ -21,6 +21,7 @@ public class AdminUserDomain {
         this.adminUserParam = adminUserParam;
     }
 
+    //查找用户名
     public AdminUserModel findUserByUsername() {
         AdminUser adminUser = adminUserDomainRepository.findUserByUsername(this.adminUserParam.getUsername());
         AdminUserModel adminUserModel = new AdminUserModel();
