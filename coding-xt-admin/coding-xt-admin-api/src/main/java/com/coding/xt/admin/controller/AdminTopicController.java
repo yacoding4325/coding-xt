@@ -38,7 +38,7 @@ public class AdminTopicController {
     }
 
 
-    @RequestMapping("uploadExcel/{subjectId}")
+    @RequestMapping("uploadExcel/{subjectId}")//增删改查--对内容管理（题库管理）
     public CallResult upload(@RequestParam("excelFile") MultipartFile multipartFile,
                              @PathVariable("subjectId") Long subjectId){
         int updateNum = 0;
