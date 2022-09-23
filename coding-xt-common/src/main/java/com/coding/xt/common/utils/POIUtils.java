@@ -19,7 +19,7 @@ import java.util.List;
  * @Author yaCoding
  * @create 2022-09-22 下午 9:16
  */
-//文件类
+//文件类--处理Excel的工具
 public class POIUtils {
 
     private final static String xls = "xls";
