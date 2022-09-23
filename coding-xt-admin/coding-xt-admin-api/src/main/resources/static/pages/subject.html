@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- 页面meta -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>码神学堂</title>
+        <meta name="description" content="码神学堂">
+        <meta name="keywords" content="码神学堂">
+        <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+        <!-- 引入样式 -->
+        <link rel="stylesheet" href="../plugins/elementui/index.css">
+        <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="../css/style.css">
+    </head>
+    <body class="hold-transition">
+        <div id="app">
+            <div class="content-header">
+                <h1>内容管理<small>学科管理</small></h1>
+                <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
+                    <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+                    <el-breadcrumb-item>内容管理</el-breadcrumb-item>
+                    <el-breadcrumb-item>学科管理</el-breadcrumb-item>
+                </el-breadcrumb>
+            </div>
+            <div class="app-container">
+                <div class="box">
+
+                    <div class="filter-container">
+                        <el-input placeholder="学科名称" v-model="pagination.queryString" style="width: 200px;" class="filter-item"></el-input>
+                        <el-button @click="findPage()" class="dalfBut">查询</el-button>
+                        <el-button type="primary" class="butT" @click="handleCreate()">新建学科</el-button>
+                    </div>
+
+
+                    <el-table size="small" current-row-key="id" :data="dataList" stripe highlight-current-row>
+                        <el-table-column  align="center" label="序号" prop="id"></el-table-column>
+                        <el-table-column label="学科名称" align="center" prop="subjectName">
+                        </el-table-column>
+                        <el-table-column label="学科年级" align="center" prop="subjectGrade">
+                        </el-table-column>
+                        <el-table-column label="学科学期" align="center" prop="subjectTerm">
+                        </el-table-column>
+                        <el-table-column label="状态" align="center" prop="status">
+                            <template scope="scope">
+                                <p v-if="scope.row.status=='0'">正常</p>
+                                <p v-if="scope.row.status=='1'"><span style="color: red">不可用</span></p>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="操作" align="center">
+                            <template slot-scope="scope">
+                                <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+
+                    <div class="pagination-container">
+                        <el-pagination
+                            class="pagiantion"
+                            @current-change="handleCurrentChange"
+                            :current-page="pagination.currentPage"
+                            :page-size="pagination.pageSize"
+                            layout="total, prev, pager, next, jumper"
+                            :total="pagination.total">
+                        </el-pagination>
+                    </div>
+
+                    <!-- 新增标签弹层 -->
+                    <div class="add-form">
+                        <el-dialog title="新增学科" :visible.sync="dialogFormVisible">
+                            <el-tabs v-model="activeName" type="card">
+                                <el-tab-pane label="基本信息" name="first">
+                            <el-form ref="dataAddForm" :model="formData" :rules="rules" label-position="right" label-width="100px">
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="学科名称" prop="subjectName">
+                                            <el-input  v-model="formData.subjectName"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                        <el-row>
+                                            <el-col >
+                                        <el-form-item label="学科年级" prop="subjectGrade">
+                                            <el-select v-model="formData.subjectGrade" placeholder="请选择">
+                                                <el-option
+                                                        v-for="item in subjectGradeOptions"
+                                                        :key="item.value"
+                                                        :label="item.label"
+                                                        :value="item.value">
+                                                </el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                            </el-col>
+                                        </el-row>
+                                        <el-row>
+                                            <el-col >
+                                            <el-form-item label="学科学期" prop="subjectTerm">
+                                                <el-select v-model="formData.subjectTerm" placeholder="请选择">
+                                                    <el-option
+                                                            v-for="item in subjectTermOptions"
+                                                            :key="item.value"
+                                                            :label="item.label"
+                                                            :value="item.value">
+                                                    </el-option>
+                                                </el-select>
+                                            </el-form-item>
+                                        </el-col>
+                                        </el-row>
+
+                            </el-form>
+                                </el-tab-pane>
+                                <el-tab-pane label="单元信息" name="second">
+                                    <div class="checkScrol">
+                                        <table class="datatable">
+                                            <thead>
+                                            <tr>
+                                                <th>选择</th>
+                                                <th>单元</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr v-for="c in tableData">
+                                                <td>
+                                                    <input :id="c" v-model="subjectUnits" type="checkbox" :value="c">
+                                                </td>
+                                                <td><label :for="c">{{c}}</label></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </el-tab-pane>
+                            </el-tabs>
+                            <div slot="footer" class="dialog-footer">
+                                <el-button @click="dialogFormVisible = false">取消</el-button>
+                                <el-button type="primary" @click="handleAdd()">确定</el-button>
+                            </div>
+                        </el-dialog>
+                    </div>
+
+                    <!-- 编辑标签弹层 -->
+                    <div class="add-form">
+                        <el-dialog title="编辑学科" :visible.sync="dialogFormVisibleEdit">
+                            <el-tabs v-model="activeName" type="card">
+                         <el-tab-pane label="基本信息" name="first">
+                            <el-form ref="dataAddForm" :model="formData" :rules="rules" label-position="right" label-width="100px">
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="学科" prop="subjectName">
+                                            <el-input  v-model="formData.subjectName"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="学科年级" prop="subjectGrade">
+                                            <el-select v-model="formData.subjectGrade" placeholder="请选择">
+                                                <el-option
+                                                        v-for="item in subjectGradeOptions"
+                                                        :key="item.value"
+                                                        :label="item.label"
+                                                        :value="item.value">
+                                                </el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="学科学期" prop="subjectTerm">
+                                            <el-select v-model="formData.subjectTerm" placeholder="请选择">
+                                                <el-option
+                                                        v-for="item in subjectTermOptions"
+                                                        :key="item.value"
+                                                        :label="item.label"
+                                                        :value="item.value">
+                                                </el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="状态" prop="status">
+                                            <el-select v-model="formData.status" placeholder="请选择">
+                                                <el-option
+                                                        v-for="item in statusOptions"
+                                                        :key="item.value"
+                                                        :label="item.label"
+                                                        :value="item.value">
+                                                </el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                            </el-form>
+                            </el-tab-pane>
+                            <el-tab-pane label="单元信息" name="second">
+                                <div class="checkScrol">
+                                    <table class="datatable">
+                                        <thead>
+                                        <tr>
+                                            <th>选择</th>
+                                            <th>单元</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr v-for="c in tableData">
+                                            <td>
+                                                <input :id="c" v-model="subjectUnits" type="checkbox" :value="c">
+                                            </td>
+                                            <td><label :for="c">{{c}}</label></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </el-tab-pane>
+                            </el-tabs>
+                            <div slot="footer" class="dialog-footer">
+                                <el-button @click="dialogFormVisibleEdit = false">取消</el-button>
+                                <el-button type="primary" @click="handleEdit()">确定</el-button>
+                            </div>
+                        </el-dialog>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <!-- 引入组件库 -->
+    <script src="../js/vue.js"></script>
+    <script src="../plugins/elementui/index.js"></script>
+    <script type="text/javascript" src="../js/jquery.min.js"></script>
+    <script src="../js/axios-0.18.0.js"></script>
+    <script>
+        var vue = new Vue({
+            el: '#app',
+            data:{
+                pagination: {//分页相关模型数据
+					  currentPage: 1,//当前页码
+					  pageSize:10,//每页显示的记录数
+					  total:0,//总记录数
+					  queryString:null//查询条件
+				},
+                activeName:'first',
+				dataList: [],//当前页要展示的分页列表数据
+                subjectList: [],
+                fbChoiceList: [{
+                   content: "",
+                }],
+                judgeAnswer:[
+                    {
+                    value: '0',
+                    label: '正确'
+                    },
+                    {
+                        value: '1',
+                        label: '错误'
+                    }],
+                imageUrl:"",
+                subjectGradeOptions:[{
+                    value: '七年级',
+                    label: '七年级'
+                }, {
+                    value: '八年级',
+                    label: '八年级'
+                },{
+                    value: '九年级',
+                    label: '九年级'
+                }],
+                subjectTermOptions:[{
+                    value: '上',
+                    label: '上'
+                }, {
+                    value: '下',
+                    label: '下',
+                }],
+                statusOptions:[{
+                    value: 0,
+                    label: '正常'
+                }, {
+                    value: 1,
+                    label: '取消',
+                }],
+                subjectUnits:[],
+                tableData:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16],
+                formData: {
+                    topicStar:1
+                },//表单数据
+                dialogFormVisible: false,//增加表单是否可见
+                dialogFormVisibleEdit:false,
+                rules: {//校验规则
+                    subjectName: [{ required: true, message: '必填项', trigger: 'blur' }],
+                }
+            },
+            //钩子函数，VUE对象初始化完成后自动执行
+            created() {
+                this.findPage();
+            },
+            methods: {
+                handleAvatarSuccess(){
+
+                },
+                beforeAvatarUpload(){
+
+                },
+                //编辑
+                handleEdit() {
+                    this.formData.subjectUnits = this.subjectUnits;
+                    axios.post("/lzadmin/subject/updateSubject",this.formData).then((res)=>{
+                        if (res.data.success){
+                            this.$message({
+                                message: '恭喜你，编辑成功',
+                                type: 'success'
+                            });
+                            this.dialogFormVisibleEdit = false;
+                            this.findPage();
+                        }else{
+                            this.$message({
+                                message: res.data.message,
+                                type: 'error'
+                            });
+                        }
+                    });
+                },
+                //添加
+                handleAdd () {
+                    this.formData.subjectUnits = this.subjectUnits;
+                    axios.post("/lzadmin/subject/saveSubject",this.formData).then((res)=>{
+                        if (res.data.success){
+                            this.$message({
+                                message: '恭喜你，添加成功',
+                                type: 'success'
+                            });
+                            this.dialogFormVisible = false;
+                            this.findPage();
+                        }else{
+                            this.$message({
+                                message: res.data.message,
+                                type: 'error'
+                            });
+                        }
+                    });
+                },
+                //分页查询
+                findPage() {
+                    axios.post("/lzadmin/subject/findPage",this.pagination).then((res)=>{
+                        if (res.data.success){
+                            this.dataList = res.data.result.list;
+                            this.pagination.total = res.data.result.size;
+                        }
+                    });
+                },
+                // 重置表单
+                resetForm() {
+                    this.formData = {};
+                    this.activeName = 'first';
+                    this.subjectUnits = [];
+                },
+                // 弹出添加窗口
+                handleCreate() {
+                    this.resetForm();
+                    this.dialogFormVisible = true;
+                },
+                // 弹出编辑窗口
+                handleUpdate(row) {
+                    this.dialogFormVisibleEdit = true;
+                    axios.post("/lzadmin/subject/findSubjectById",{"id":row.id}).then((res)=>{
+                        if (res.data.success){
+                            this.formData  = res.data.result;
+                            this.subjectUnits = res.data.result.subjectUnits;
+                        }
+                    });
+                },
+                //切换页码
+                handleCurrentChange(currentPage) {
+                    this.pagination.currentPage = currentPage;
+                    this.findPage();
+                },
+                // 删除
+                handleDelete(row) {
+                    this.$confirm("是否确定删除，一旦删除不可恢复?").then(()=>{
+                        axios.post("/lzadmin/subject/deleteById",{"id":row.id}).then((res)=>{
+                            if (res.data.success){
+                                this.$message({
+                                    type: 'info',
+                                    message: '删除成功'
+                                });
+                                this.findPage();
+                            }
+                        });
+                    });
+
+                }
+            }
+        })
+    </script>
+</html>
