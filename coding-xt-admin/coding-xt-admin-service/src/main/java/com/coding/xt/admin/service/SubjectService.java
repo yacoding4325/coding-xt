@@ -15,4 +15,11 @@ public interface SubjectService {
      * @return
      */
     CallResult findSubjectList(SubjectParam subjectParam);
+
+    /**
+     * 保存主题列表
+     * @param subjectParam
+     * @return
+     */
+    CallResult saveSubject(SubjectParam subjectParam);
 }

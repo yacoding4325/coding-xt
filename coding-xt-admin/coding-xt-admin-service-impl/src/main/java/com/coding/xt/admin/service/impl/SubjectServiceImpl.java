@@ -34,5 +34,28 @@ public class SubjectServiceImpl extends AbstractService implements SubjectServic
         });
     }
 
+    //保存主题列表
+    @Override
+    @Transactional
+    public CallResult saveSubject(SubjectParam subjectParam) {
+        SubjectDomain subjectDomain = this.subjectDomainRepository.createDomain(subjectParam);
+        
+        return this.serviceTemplate.execute(new AbstractTemplateAction<Object>() {
+            @Override
+            public CallResult<Object> checkParam() {
+                return subjectDomain.checkSaveSubjectParam();
+            }
+
+            @Override
+            public CallResult<Object> checkBiz() {
+                return subjectDomain.checkSaveSubjectBiz();
+            }
+
+            @Override
+            public CallResult<Object> doAction() {
+                return subjectDomain.saveSubject();
+            }
+        });
+    }
 
 }

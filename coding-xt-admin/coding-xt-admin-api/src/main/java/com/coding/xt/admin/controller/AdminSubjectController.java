@@ -28,9 +28,9 @@ public class AdminSubjectController {
     }
 
     //保存主题
-//    @PostMapping(value = "saveSubject")
-//    public CallResult saveSubject(@RequestBody SubjectParam subjectParam) {
-//        return subjectService.saveSubject(subjectParam);
-//    }
+    @PostMapping(value = "saveSubject")
+    public CallResult saveSubject(@RequestBody SubjectParam subjectParam) {
+        return subjectService.saveSubject(subjectParam);
+    }
 
 }
