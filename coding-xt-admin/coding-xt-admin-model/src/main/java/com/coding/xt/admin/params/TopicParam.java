@@ -28,10 +28,10 @@ public class TopicParam {
     private Long subjectId;
 
     private Long userId;
-
     //题目ID
     private Long topicId;
-
+    //单元
+    private Integer subjectUnit;
     //单元
     private List<Integer> subjectUnitList;
 
@@ -49,5 +49,4 @@ public class TopicParam {
     private Long createTime;
 
     private Long lastUpdateTime;
-
 }
