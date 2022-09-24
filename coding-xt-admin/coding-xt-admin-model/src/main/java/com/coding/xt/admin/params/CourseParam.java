@@ -28,7 +28,6 @@ public class CourseParam {
     private String subjectName;
     private String subjectGrade;
     private String subjectTerm;
-
     private Long courseId;
     private String imageUrl;
 
