@@ -18,4 +18,5 @@ public interface SubjectMapper extends BaseMapper<Subject> {
      * @return
      */
     List<Subject> findSubjectListByCourseId(Long courseId);
+
 }
