@@ -3,9 +3,7 @@ package com.coding.xt.common.service;
 
 import com.coding.xt.common.model.CallResult;
 
-/**
- * @author Jarno
- */
+
 public interface ServiceTemplate {
 
 

@@ -1,4 +1,4 @@
-package com.coding.xt.sso.config;
+package com.coding.xt.sso.dubbo.config;
 
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;

@@ -1,4 +1,4 @@
-package com.coding.xt.sso.config;
+package com.coding.xt.sso.dubbo.config;
 
 import com.coding.xt.sso.handler.LoginInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
