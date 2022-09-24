@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- 页面meta -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>码神学堂</title>
+        <meta name="description" content="码神学堂">
+        <meta name="keywords" content="码神学堂">
+        <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+        <!-- 引入样式 -->
+        <link rel="stylesheet" href="../plugins/elementui/index.css">
+        <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="../css/style.css">
+
+        <style lang="css">
+            .el-tooltip__popper{
+                font-size: 14px;
+                max-width:50%;
+                backgroud: #68859a !important;  /*背景色　　!important优先级*/
+
+            } /*设置显示隐藏部分内容，按50%显示*/
+
+        </style>
+    </head>
+    <body class="hold-transition">
+        <div id="app">
+            <div class="content-header">
+                <h1>内容管理<small>题库管理</small></h1>
+                <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
+                    <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+                    <el-breadcrumb-item>内容管理</el-breadcrumb-item>
+                    <el-breadcrumb-item>题库管理</el-breadcrumb-item>
+                </el-breadcrumb>
+            </div>
+            <div class="app-container">
+                <div class="box">
+                    <div class="filter-container">
+                        <el-input placeholder="题目名称" v-model="pagination.queryString" style="width: 200px;" class="filter-item"></el-input>
+                        <el-select v-model="pagination.topicSubject" >
+                            <el-option
+                                    v-for="item in subjectList"
+                                    :key="item.subjectName"
+                                    :label="item.subjectName"
+                                    :value="item.id">
+                            </el-option>
+                        </el-select>
+                        <el-button @click="findPage()" class="dalfBut">查询</el-button>
+<!--                        <el-button type="primary" class="butT" @click="handleFBCreate()">新建填空题</el-button>-->
+<!--                        <el-button type="primary" class="butT" @click="handleRadioCreate()">新建单选题</el-button>-->
+<!--                        <el-button type="primary" class="butT" @click="handleMulCreate()">新建多选题</el-button>-->
+<!--                        <el-button type="primary" class="butT" @click="handleQACreate()">新建问答题</el-button>-->
+<!--                        <el-button type="primary" class="butT" @click="handleJudgeCreate()">新建判断题</el-button>-->
+                    </div>
+                    <div class="filter-container">
+                        学科ID(上传excel文件时需要填写)：
+                        <el-select v-model="uploadSubjectId" >
+                            <el-option
+                                    v-for="item in subjectList"
+                                    :key="item.subjectName"
+                                    :label="item.subjectName"
+                                    :value="item.id">
+                            </el-option>
+                        </el-select>
+                        <el-upload :action="uploadUrl()"
+                                            name="excelFile"
+                                            :show-file-list="false"
+                                            :on-success="handleSuccess"
+                                            :before-upload="beforeUpload">
+                            <el-button type="primary">上传Excel题目文件</el-button>
+                        </el-upload>
+                    </div>
+                    <el-table size="small" current-row-key="id" :data="dataList" stripe highlight-current-row>
+                        <el-table-column  align="center" label="序号" prop="id"></el-table-column>
+                        <el-table-column prop="topicTypeStr" label="题型" align="center">
+<!--                            <template slot-scope="scope">-->
+<!--                                <span>{{ scope.row.topicType == '0' ? '填空题' : scope.row.topicType == '1' ? '单选题': scope.row.topicType == '2' ? '多选题': scope.row.topicType == '3' ? '单选题': scope.row.topicType == '4' ? '单选题':''}}</span>-->
+<!--                            </template>-->
+                        </el-table-column>
+                        <el-table-column prop="subjectStr" label="学科" align="center"></el-table-column>
+                        <el-table-column prop="subject" label="学科ID" align="center"></el-table-column>
+                        <el-table-column label="题目" align="center" prop="topicTitle" :show-overflow-tooltip="true">
+                        </el-table-column>
+                        <el-table-column label="难度" align="center" prop="topicStar">
+                        </el-table-column>
+                        <el-table-column label="城市" align="center" prop="topicAreaCity">
+                        </el-table-column>
+                        <el-table-column label="答案" align="center" prop="answer">
+                        </el-table-column>
+                        <el-table-column prop="createTime" label="创建时间" align="center"></el-table-column>
+                        <el-table-column prop="lastUpdateTime" label="更新时间" align="center"></el-table-column>
+                        <el-table-column label="操作" align="center">
+                            <template slot-scope="scope">
+<!--                                <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>-->
+<!--                                <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>-->
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <div class="pagination-container">
+                        <el-pagination
+                            class="pagiantion"
+                            @current-change="handleCurrentChange"
+                            :current-page="pagination.currentPage"
+                            :page-size="pagination.pageSize"
+                            layout="total, prev, pager, next, jumper"
+                            :total="pagination.total">
+                        </el-pagination>
+                    </div>
+                    <!-- 新增标签弹层 -->
+                    <div class="add-form">
+                        <el-dialog title="新增填空题" :visible.sync="dialogFillBlankFormVisible">
+                            <el-form ref="dataAddForm" :model="formData" :rules="rules" label-position="right" label-width="100px">
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="题目" prop="topicTitle">
+                                            <el-input  v-model="formData.topicTitle"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="图片" prop="topicImg">
+                                            <el-upload
+                                                    class="avatar-uploader"
+                                                    action="/tk_admin/topic/upload"
+                                                    :show-file-list="false"
+                                                    :on-success="handleAvatarSuccess"
+                                                    :before-upload="beforeAvatarUpload">
+                                                <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                            </el-upload>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col>
+                                        <el-form-item
+                                                v-for="(fb, index) in fbChoiceList"
+                                                :label="'填空答案:' + index"
+                                                :key="fb.key"
+                                                :prop="'fbChoice_' + index "
+                                                :rules="{
+                                                          required: true, message: '选项不能为空', trigger: 'blur'
+                                                        }"
+                                        >
+                                            <el-input v-model="fb.content"></el-input><el-button @click.prevent="removeFbChoice(fb)">删除</el-button>
+                                        </el-form-item>
+                                        <el-form-item>
+                                            <el-button @click="addFbChoice">新增填空答案</el-button>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col>
+                                        <el-form-item label="学科" prop="topicSubject">
+                                            <el-select v-model="formData.topicSubject" >
+                                                <el-option
+                                                        v-for="item in subjectList"
+                                                        :key="item.subjectName"
+                                                        :label="item.subjectName"
+                                                        :value="item.id">
+                                                </el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="省份" prop="topicAreaPro">
+                                            <el-input  v-model="formData.topicAreaPro"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="城市" prop="topicAreaCity">
+                                            <el-input  v-model="formData.topicAreaCity"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="难度" prop="topicStar">
+                                            <el-input-number :min="1" :max="5" v-model="formData.topicStar" />
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="题目解析" prop="topicAnalyze">
+                                            <el-input type="textarea" v-model="formData.topicAnalyze"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                            </el-form>
+                            <div slot="footer" class="dialog-footer">
+                                <el-button @click="dialogFillBlankFormVisible = false">取消</el-button>
+                                <el-button type="primary" @click="handleFBAdd()">确定</el-button>
+                            </div>
+                        </el-dialog>
+                    </div>
+
+                    <!-- 新增标签弹层 -->
+                    <div class="add-form">
+                        <el-dialog title="新增单选题题" :visible.sync="dialogRadioFormVisible">
+                            <el-form ref="dataAddForm" :model="formData" :rules="rules" label-position="right" label-width="100px">
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="题目" prop="topicTitle">
+                                            <el-input  v-model="formData.topicTitle"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="图片" prop="topicImg">
+                                            <el-upload
+                                                    class="avatar-uploader"
+                                                    action="/tk_admin/topic/upload"
+                                                    :show-file-list="false"
+                                                    :on-success="handleAvatarSuccess"
+                                                    :before-upload="beforeAvatarUpload">
+                                                <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                            </el-upload>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col>
+                                        <el-form-item label="选项A" prop="topicRadioAChoice">
+                                            <el-input  v-model="formData.topicRadioAChoice"/>
+                                        </el-form-item>
+                                        <el-form-item label="选项B" prop="topicRadioBChoice">
+                                            <el-input  v-model="formData.topicRadioBChoice"/>
+                                        </el-form-item>
+                                        <el-form-item label="选项C" prop="topicRadioCChoice">
+                                            <el-input  v-model="formData.topicRadioCChoice"/>
+                                        </el-form-item>
+                                        <el-form-item label="选项D" prop="topicRadioDChoice">
+                                            <el-input  v-model="formData.topicRadioDChoice"/>
+                                        </el-form-item>
+                                        <el-form-item label="选项E" prop="topicRadioEChoice">
+                                            <el-input  v-model="formData.topicRadioEChoice"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col>
+                                        <el-form-item label="学科" prop="topicSubject">
+                                            <el-select v-model="formData.topicSubject" >
+                                                <el-option
+                                                        v-for="item in subjectList"
+                                                        :key="item.subjectName"
+                                                        :label="item.subjectName"
+                                                        :value="item.id">
+                                                </el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="省份" prop="topicAreaPro">
+                                            <el-input  v-model="formData.topicAreaPro"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="城市" prop="topicAreaCity">
+                                            <el-input  v-model="formData.topicAreaCity"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="难度" prop="topicStar">
+                                            <el-input-number :min="1" :max="5" v-model="formData.topicStar" />
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="答案" prop="answer">
+                                            <el-input  v-model="formData.answer"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="题目解析" prop="topicAnalyze">
+                                            <el-input type="textarea" v-model="formData.topicAnalyze"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                            </el-form>
+                            <div slot="footer" class="dialog-footer">
+                                <el-button @click="dialogRadioFormVisible = false">取消</el-button>
+                                <el-button type="primary" @click="handleRadioAdd()">确定</el-button>
+                            </div>
+                        </el-dialog>
+                    </div>
+
+                    <!-- 新增标签弹层 -->
+                    <div class="add-form">
+                        <el-dialog title="新增多选题" :visible.sync="dialogMulFormVisible">
+                            <el-form ref="dataAddForm" :model="formData" :rules="rules" label-position="right" label-width="100px">
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="题目" prop="topicTitle">
+                                            <el-input  v-model="formData.topicTitle"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="图片" prop="topicImg">
+                                            <el-upload
+                                                    class="avatar-uploader"
+                                                    action="/tk_admin/topic/upload"
+                                                    :show-file-list="false"
+                                                    :on-success="handleAvatarSuccess"
+                                                    :before-upload="beforeAvatarUpload">
+                                                <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                            </el-upload>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col>
+                                        <el-form-item label="选项A" prop="topicMulAChoice">
+                                            <el-input  v-model="formData.topicMulAChoice"/>
+                                        </el-form-item>
+                                        <el-form-item label="选项B" prop="topicMulBChoice">
+                                            <el-input  v-model="formData.topicMulBChoice"/>
+                                        </el-form-item>
+                                        <el-form-item label="选项C" prop="topicMulCChoice">
+                                            <el-input  v-model="formData.topicMulCChoice"/>
+                                        </el-form-item>
+                                        <el-form-item label="选项D" prop="topicMulDChoice">
+                                            <el-input  v-model="formData.topicMulDChoice"/>
+                                        </el-form-item>
+                                        <el-form-item label="选项E" prop="topicMulEChoice">
+                                            <el-input  v-model="formData.topicMulEChoice"/>
+                                        </el-form-item>
+                                        <el-form-item label="选项F" prop="topicMulFChoice">
+                                            <el-input  v-model="formData.topicMulFChoice"/>
+                                        </el-form-item>
+                                        <el-form-item label="选项G" prop="topicMulGChoice">
+                                            <el-input  v-model="formData.topicMulGChoice"/>
+                                        </el-form-item>
+                                        <el-form-item label="选项H" prop="topicMulHChoice">
+                                            <el-input  v-model="formData.topicMulHChoice"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col>
+                                        <el-form-item label="学科" prop="topicSubject">
+                                            <el-select v-model="formData.topicSubject" >
+                                                <el-option
+                                                        v-for="item in subjectList"
+                                                        :key="item.subjectName"
+                                                        :label="item.subjectName"
+                                                        :value="item.id">
+                                                </el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="省份" prop="topicAreaPro">
+                                            <el-input  v-model="formData.topicAreaPro"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="城市" prop="topicAreaCity">
+                                            <el-input  v-model="formData.topicAreaCity"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="难度" prop="topicStar">
+                                            <el-input-number :min="1" :max="5" v-model="formData.topicStar" />
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="答案" prop="answer">
+                                            <el-input  v-model="formData.answer"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="题目解析" prop="topicAnalyze">
+                                            <el-input type="textarea" v-model="formData.topicAnalyze"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                            </el-form>
+                            <div slot="footer" class="dialog-footer">
+                                <el-button @click="dialogMulFormVisible = false">取消</el-button>
+                                <el-button type="primary" @click="handleMulAdd()">确定</el-button>
+                            </div>
+                        </el-dialog>
+                    </div>
+                    <!-- 新增标签弹层 -->
+                    <div class="add-form">
+                        <el-dialog title="新增问答题" :visible.sync="dialogQAFormVisible">
+                            <el-form ref="dataAddForm" :model="formData" :rules="rules" label-position="right" label-width="100px">
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="题目" prop="topicTitle">
+                                            <el-input  v-model="formData.topicTitle"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="图片" prop="topicImg">
+                                            <el-upload
+                                                    class="avatar-uploader"
+                                                    action="/tk_admin/topic/upload"
+                                                    :show-file-list="false"
+                                                    :on-success="handleAvatarSuccess"
+                                                    :before-upload="beforeAvatarUpload">
+                                                <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                            </el-upload>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col>
+                                        <el-form-item label="学科" prop="topicSubject">
+                                            <el-select v-model="formData.topicSubject" >
+                                                <el-option
+                                                        v-for="item in subjectList"
+                                                        :key="item.subjectName"
+                                                        :label="item.subjectName"
+                                                        :value="item.id">
+                                                </el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="省份" prop="topicAreaPro">
+                                            <el-input  v-model="formData.topicAreaPro"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="城市" prop="topicAreaCity">
+                                            <el-input  v-model="formData.topicAreaCity"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="难度" prop="topicStar">
+                                            <el-input-number :min="1" :max="5" v-model="formData.topicStar" />
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="答案" prop="answer">
+                                            <el-input  type="textarea" v-model="formData.answer"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="题目解析" prop="topicAnalyze">
+                                            <el-input type="textarea" v-model="formData.topicAnalyze"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                            </el-form>
+                            <div slot="footer" class="dialog-footer">
+                                <el-button @click="dialogQAFormVisible = false">取消</el-button>
+                                <el-button type="primary" @click="handleQAAdd()">确定</el-button>
+                            </div>
+                        </el-dialog>
+                    </div>
+                    <!-- 新增标签弹层 -->
+                    <div class="add-form">
+                        <el-dialog title="新增判断题" :visible.sync="dialogJudgeFormVisible">
+                            <el-form ref="dataAddForm" :model="formData" :rules="rules" label-position="right" label-width="100px">
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="题目" prop="topicTitle">
+                                            <el-input  v-model="formData.topicTitle"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="图片" prop="topicImg">
+                                            <el-upload
+                                                    class="avatar-uploader"
+                                                    action="/tk_admin/topic/upload"
+                                                    :show-file-list="false"
+                                                    :on-success="handleAvatarSuccess"
+                                                    :before-upload="beforeAvatarUpload">
+                                                <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                            </el-upload>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col>
+                                        <el-form-item label="学科" prop="topicSubject">
+                                            <el-select v-model="formData.topicSubject" >
+                                                <el-option
+                                                        v-for="item in subjectList"
+                                                        :key="item.subjectName"
+                                                        :label="item.subjectName"
+                                                        :value="item.id">
+                                                </el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col>
+                                        <el-form-item label="答案" prop="answer">
+                                            <el-select v-model="formData.answer" placeholder="请选择">
+                                                <el-option
+                                                        v-for="item in judgeAnswer"
+                                                        :key="item.value"
+                                                        :label="item.label"
+                                                        :value="item.value">
+                                                </el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="省份" prop="topicAreaPro">
+                                            <el-input  v-model="formData.topicAreaPro"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="城市" prop="topicAreaCity">
+                                            <el-input  v-model="formData.topicAreaCity"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="难度" prop="topicStar">
+                                            <el-input-number :min="1" :max="5" v-model="formData.topicStar" />
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="题目解析" prop="topicAnalyze">
+                                            <el-input type="textarea" v-model="formData.topicAnalyze"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                            </el-form>
+                            <div slot="footer" class="dialog-footer">
+                                <el-button @click="dialogJudgeFormVisible = false">取消</el-button>
+                                <el-button type="primary" @click="handleJudgeAdd()">确定</el-button>
+                            </div>
+                        </el-dialog>
+                    </div>
+                    <!-- 编辑标签弹层 -->
+                    <div class="add-form">
+                        <el-dialog title="编辑判断题" :visible.sync="dialogJudgeFormVisibleEdit">
+                            <el-form ref="dataAddForm" :model="formData" :rules="rules" label-position="right" label-width="100px">
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="题目" prop="topicTitle">
+                                            <el-input  v-model="formData.topicTitle"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="图片" prop="topicImg">
+                                            <el-upload
+                                                    class="avatar-uploader"
+                                                    action="/tk_admin/topic/upload"
+                                                    :show-file-list="false"
+                                                    :on-success="handleAvatarSuccess"
+                                                    :before-upload="beforeAvatarUpload">
+                                                <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                            </el-upload>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col>
+                                        <el-form-item label="学科" prop="topicSubject">
+                                            <el-select v-model="formData.topicSubject" >
+                                                <el-option
+                                                        v-for="item in subjectList"
+                                                        :key="item.subjectName"
+                                                        :label="item.subjectName"
+                                                        :value="item.id">
+                                                </el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col>
+                                        <el-form-item label="答案" prop="answer">
+                                            <el-select v-model="formData.answer" placeholder="请选择">
+                                                <el-option :value="0" lable="正确"></el-option>
+                                                <el-option :value="1" lable="错误"></el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="题目解析" prop="topicAnalyze">
+                                            <el-input type="textarea" v-model="formData.topicAnalyze"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                            </el-form>
+                            <div slot="footer" class="dialog-footer">
+                                <el-button @click="dialogJudgeFormVisibleEdit = false">取消</el-button>
+                                <el-button type="primary" @click="handleJudgeEdit()">确定</el-button>
+                            </div>
+                        </el-dialog>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <!-- 引入组件库 -->
+    <script src="../js/vue.js"></script>
+    <script src="../plugins/elementui/index.js"></script>
+    <script type="text/javascript" src="../js/jquery.min.js"></script>
+    <script src="../js/axios-0.18.0.js"></script>
+    <script>
+        var vue = new Vue({
+            el: '#app',
+            data:{
+                pagination: {//分页相关模型数据
+					  currentPage: 1,//当前页码
+					  pageSize:20,//每页显示的记录数
+					  total:0,//总记录数
+					  queryString:null,//查询条件
+                      topicSubject:null
+				},
+				dataList: [],//当前页要展示的分页列表数据
+                uploadSubjectId:-1,
+                subjectList: [],
+                fbChoiceList: [{
+                   content: "",
+                }],
+                judgeAnswer:[
+                    {
+                    value: '0',
+                    label: '正确'
+                    },
+                    {
+                        value: '1',
+                        label: '错误'
+                    }],
+                imageUrl:"",
+                subjectId:-1,
+                formData: {
+                    topicStar:1
+                },//表单数据
+                dialogFillBlankFormVisible: false,//增加表单是否可见
+                dialogRadioFormVisible: false,//增加表单是否可见
+                dialogMulFormVisible: false,//增加表单是否可见
+                dialogQAFormVisible: false,//增加表单是否可见
+                dialogJudgeFormVisible: false,//增加表单是否可见
+                dialogFBFormVisibleEdit:false,
+                dialogRadioFormVisibleEdit:false,
+                dialogMulFormVisibleEdit:false,
+                dialogQAFormVisibleEdit:false,
+                dialogJudgeFormVisibleEdit:false,
+                rules: {//校验规则
+                    topicTitle: [{ required: true, message: '必填项', trigger: 'blur' }],
+                    topicSubject: [{ required: true, message: '必填项', trigger: 'blur' }],
+                    topicAnalyze: [{ required: true, message: '必填项', trigger: 'blur' }],
+                    answer: [{ required: true, message: '必填项', trigger: 'blur' }],
+                    topicStar: [{ required: true, message: '必填项', trigger: 'blur' }],
+                    topicAreaPro: [{ required: true, message: '必填项', trigger: 'blur' }],
+                    topicAreaCity: [{ required: true, message: '必填项', trigger: 'blur' }],
+                }
+            },
+            //钩子函数，VUE对象初始化完成后自动执行
+            created() {
+                this.findPage();
+            },
+            methods: {
+                uploadUrl(){
+                    return "/lzadmin/topic/uploadExcel/"+this.uploadSubjectId;
+                },
+                //上传之前进行文件格式校验
+                beforeUpload(file){
+                    const isXLS = file.type === 'application/vnd.ms-excel';
+                    if(isXLS){
+                        return true;
+                    }
+                    const isXLSX = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+                    if (isXLSX) {
+                        return true;
+                    }
+                    this.$message.error('上传文件只能是xls或者xlsx格式!');
+                    return false;
+                },
+                //上传成功提示
+                handleSuccess(response, file) {
+                    if(2000000000 === response.code){
+                        this.$message({
+                            message: response.message,
+                            type: 'success'
+                        });
+                    }else{
+                        this.$message.error(response.message);
+                    }
+                },
+                handleAvatarSuccess(){
+
+                },
+                beforeAvatarUpload(){
+
+                },
+                //编辑
+                handleEdit() {
+                },
+                //添加
+                handleFBAdd () {
+                    this.formData["topicImg"] = this.imageUrl;
+                    const choiceList = [];
+                    for (let i = 0; i <this.fbChoiceList.length; i++){
+                        const choice = {};
+                        choice["id"] = i+1;
+                        choice["content"] = this.fbChoiceList[i].content;
+                        choiceList.push(choice);
+                    }
+                    this.formData.fillBlankChoiceList = choiceList;
+                    axios.post("/lzadmin/topic/saveFbTopic",this.formData).then((res)=>{
+                        if (res.data.success){
+                            this.$message({
+                                message: '恭喜你，添加成功',
+                                type: 'success'
+                            });
+                            this.dialogFillBlankFormVisible = false;
+                            this.findPage();
+                        }
+                    });
+                },
+                handleRadioAdd () {
+                    this.formData["topicImg"] = this.imageUrl;
+                    axios.post("/lzadmin/topic/saveRadioTopic",this.formData).then((res)=>{
+                        if (res.data.success){
+                            this.$message({
+                                message: '恭喜你，添加成功',
+                                type: 'success'
+                            });
+                            this.dialogRadioFormVisible = false;
+                            this.findPage();
+                        }
+                    });
+                },
+                handleMulAdd () {
+                    this.formData["topicImg"] = this.imageUrl;
+                    axios.post("/lzadmin/topic/saveMulChoiceTopic",this.formData).then((res)=>{
+                        if (res.data.success){
+                            this.$message({
+                                message: '恭喜你，添加成功',
+                                type: 'success'
+                            });
+                            this.dialogMulFormVisible = false;
+                            this.findPage();
+                        }
+                    });
+                },
+                handleQAAdd () {
+                    this.formData["topicImg"] = this.imageUrl;
+                    axios.post("/lzadmin/topic/saveQATopic",this.formData).then((res)=>{
+                        if (res.data.success){
+                            this.$message({
+                                message: '恭喜你，添加成功',
+                                type: 'success'
+                            });
+                            this.dialogQAFormVisible = false;
+                            this.findPage();
+                        }
+                    });
+                },
+                handleJudgeAdd () {
+                    this.formData["topicImg"] = this.imageUrl;
+                    axios.post("/lzadmin/topic/saveJudgeTopic",this.formData).then((res)=>{
+                        if (res.data.success){
+                            this.$message({
+                                message: '恭喜你，添加成功',
+                                type: 'success'
+                            });
+                            this.dialogJudgeFormVisible = false;
+                            this.findPage();
+                        }
+                    });
+                },
+                //分页查询
+                findPage() {
+                    axios.post("/lzadmin/subject/allSubjectList",{"currentPage":1}).then((res)=>{
+                        if (res.data.success){
+                            this.subjectList = res.data.result;
+
+                        }
+                    });
+
+                    const params = {
+                        "page":this.pagination.currentPage,
+                        "pageSize":this.pagination.pageSize,
+                        "topicTitle":this.pagination.queryString,
+                        "subjectId":this.pagination.topicSubject};
+                    axios.post("/lzadmin/topic/findPage",params).then((res)=>{
+                        if (res.data.success){
+                            this.dataList = res.data.result.list;
+                            this.pagination.total = res.data.result.size;
+                        }
+                    });
+                },
+                // 重置表单
+                resetForm() {
+                    this.formData = {};
+                },
+                // 弹出添加窗口
+                handleFBCreate() {
+                    this.resetForm();
+                    this.dialogFillBlankFormVisible = true;
+                    axios.post("/lzadmin/subject/allSubjectList",{"page":1}).then((res)=>{
+                        if (res.data.success){
+                            this.subjectList = res.data.result.list;
+                        }
+                    });
+
+                },
+                removeFbChoice(item) {
+                    var index = this.fbChoiceList.indexOf(item);
+                    if (index !== -1) {
+                        this.fbChoiceList.splice(index, 1)
+                    }
+                },
+                addFbChoice() {
+                    this.fbChoiceList.push({
+                        content: '',
+                    });
+                },
+                // 弹出添加窗口
+                handleRadioCreate() {
+                    this.resetForm();
+                    this.dialogRadioFormVisible = true;
+                    axios.post("/lzadmin/subject/allSubjectList",{"page":1}).then((res)=>{
+                        if (res.data.success){
+                            this.subjectList = res.data.result.list;
+                        }
+                    });
+                },
+                // 弹出添加窗口
+                handleMulCreate() {
+                    this.resetForm();
+                    this.dialogMulFormVisible = true;
+                    axios.post("/lzadmin/subject/allSubjectList",{"page":1}).then((res)=>{
+                        if (res.data.success){
+                            this.subjectList = res.data.result.list;
+                        }
+                    });
+                },
+                // 弹出添加窗口
+                handleQACreate() {
+                    this.resetForm();
+                    this.dialogQAFormVisible = true;
+                    axios.post("/lzadmin/subject/allSubjectList",{"page":1}).then((res)=>{
+                        if (res.data.success){
+                            this.subjectList = res.data.result.list;
+                        }
+                    });
+                },
+                // 弹出添加窗口
+                handleJudgeCreate() {
+                    this.resetForm();
+                    this.dialogJudgeFormVisible = true;
+                    axios.post("/lzadmin/subject/allSubjectList",{"page":1}).then((res)=>{
+                        if (res.data.success){
+                            this.subjectList = res.data.result.list;
+                        }
+                    });
+                },
+                // 弹出编辑窗口
+                handleUpdate(row) {
+                },
+                //切换页码
+                handleCurrentChange(currentPage) {
+                    this.pagination.currentPage = currentPage;
+                    this.findPage();
+                },
+                // 删除
+                handleDelete(row) {
+                    this.$confirm("是否确定删除，一旦删除不可恢复?").then(()=>{
+                        axios.post("/lzadmin/topic/deleteById",{"id":row.id}).then((res)=>{
+                            if (res.data.success){
+                                this.$message({
+                                    type: 'info',
+                                    message: '删除成功'
+                                });
+                                this.findPage();
+                            }
+                        });
+                    });
+
+                }
+            }
+        })
+    </script>
+</html>

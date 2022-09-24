@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- 页面meta -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>智慧猪管理后台</title>
+        <meta name="description" content="智慧猪管理后台">
+        <meta name="keywords" content="智慧猪管理后台">
+        <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+        <!-- 引入样式 -->
+        <link rel="stylesheet" href="../plugins/elementui/index.css">
+        <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="../css/style.css">
+
+
+        <!-- Theme included stylesheets -->
+        <link href="../plugins/quill/quill.snow.css" rel="stylesheet">
+        <link href="../plugins/quill/quill.bubble.css" rel="stylesheet">
+
+        <!-- Core build with no theme, formatting, non-essential modules -->
+        <link href="../plugins/quill/quill.core.css" rel="stylesheet">
+        <!-- Main Quill library -->
+        <script src="../plugins/quill/quill.js"></script>
+<!--        <script src="../plugins/quill/quill.core.js"></script>-->
+    </head>
+    <body class="hold-transition">
+        <div id="app">
+
+            <div class="content-header">
+                <h1>网站管理<small>新闻管理</small></h1>
+                <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
+                    <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+                    <el-breadcrumb-item>网站管理</el-breadcrumb-item>
+                    <el-breadcrumb-item>新闻管理</el-breadcrumb-item>
+                </el-breadcrumb>
+            </div>
+
+            <div class="app-container">
+                <div class="box">
+
+                    <div class="filter-container">
+                        <!--v-model vue的属性 代表和其中的数据进行双向绑定-->
+                        <el-input placeholder="课程名称" v-model="pagination.queryString" style="width: 200px;" class="filter-item"></el-input>
+                        <!--@click vue的写法，代表绑定了 vue对象method中的findSearchPage方法 触发的点击事件-->
+                        <el-button @click="findSearchPage()" class="dalfBut">查询11111</el-button>
+                        <el-button type="primary" class="butT" @click="handleCreate()">新建新闻</el-button>
+                    </div>
+
+                    <el-table size="small" current-row-key="id" :data="dataList" stripe highlight-current-row>
+                        <el-table-column  align="center" label="序号" prop="id"></el-table-column>
+                        <el-table-column label="编号" align="center" prop="id">
+                        </el-table-column>
+                        <el-table-column label="标题" align="center" prop="title">
+                        </el-table-column>
+                        <el-table-column label="tab" align="center" prop="tab">
+                            <template scope="scope">
+                                <p v-if="scope.row.tab=='1'">题库</p>
+                                <p v-if="scope.row.tab=='2'">升学</p>
+                                <p v-if="scope.row.tab=='3'">其他</p>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="图片" align="center">
+                            <template slot-scope="scope">
+                                <img :src="scope.row.imageUrl" width="40" height="40" class="head_pic"/>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="创建时间" align="center" prop="createTime">
+                        </el-table-column>
+                        <el-table-column label="操作" align="center">
+                            <template slot-scope="scope">
+                                <!--scope.row等于dataList其中的一条数据(编辑按钮所在的行)-->
+                                <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
+                                <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <div class="pagination-container">
+                        <el-pagination
+                            class="pagiantion"
+                            @current-change="handleCurrentChange"
+                            :current-page="pagination.currentPage"
+                            :page-size="pagination.pageSize"
+                            layout="total, prev, pager, next, jumper"
+                            :total="pagination.total">
+                        </el-pagination>
+                    </div>
+                    <!-- 新增标签弹层 -->
+                    <div class="add-form">
+                        <el-dialog title="新增" :visible.sync="dialogFormVisible">
+                                    <el-form ref="dataAddForm" :model="formData" :rules="rules" label-position="right" label-width="100px">
+                                        <el-row>
+                                            <el-col >
+                                                <el-form-item label="新闻标题" prop="title">
+                                                    <el-input  v-model="formData.title"/>
+                                                </el-form-item>
+                                            </el-col>
+                                        </el-row>
+                                        <el-row>
+                                            <el-col >
+                                                <el-form-item label="新闻概述" prop="summary">
+                                                    <el-input type="textarea" v-model="formData.summary"/>
+                                                </el-form-item>
+                                            </el-col>
+                                        </el-row>
+                                        <el-row>
+                                            <el-col >
+                                                <el-form-item label="图片地址" prop="imageUrl">
+<!--                                                    <el-input  v-model="formData.imageUrl"/>-->
+                                                    <el-upload
+                                                            class="avatar-uploader"
+                                                            action="/lzadmin/news/upload"
+                                                            name="imageFile"
+                                                            :show-file-list="false"
+                                                            :on-success="handleAvatarSuccess"
+                                                            :before-upload="beforeAvatarUpload">
+                                                        <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                                    </el-upload>
+
+                                                </el-form-item>
+                                            </el-col>
+                                        </el-row>
+                                        <el-row>
+                                            <el-col >
+                                                <el-form-item label="作者" prop="author">
+                                                    <el-input  v-model="formData.author"/>
+                                                </el-form-item>
+                                            </el-col>
+                                        </el-row>
+                                        <el-row>
+                                            <el-col >
+                                                <el-form-item label="新闻内容" prop="content">
+                                                    <quill-editor  v-model="formData.content"></quill-editor>
+                                                </el-form-item>
+                                            </el-col>
+                                        </el-row>
+                                        <el-row>
+                                            <el-col >
+                                                <el-form-item label="新闻tab" prop="tab">
+                                                    <el-select v-model="formData.tab" placeholder="请选择">
+                                                        <el-option
+                                                                v-for="item in tabOptions"
+                                                                :key="item.value"
+                                                                :label="item.label"
+                                                                :value="item.value">
+                                                        </el-option>
+                                                    </el-select>
+                                                </el-form-item>
+                                            </el-col>
+                                        </el-row>
+                                    </el-form>
+                            <div slot="footer" class="dialog-footer">
+                                <el-button @click="dialogFormVisible = false">取消</el-button>
+                                <el-button type="primary" @click="handleAdd()">确定</el-button>
+                            </div>
+                        </el-dialog>
+                    </div>
+
+                    <!-- 编辑标签弹层 -->
+                    <div class="add-form">
+                        <el-dialog title="编辑" :visible.sync="dialogFormVisibleEdit">
+                            <el-form ref="dataAddForm" :model="formData" :rules="rules" label-position="right" label-width="100px">
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="新闻标题" prop="title">
+                                            <el-input  v-model="formData.title"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="新闻概述" prop="summary">
+                                            <el-input type="textarea" v-model="formData.summary"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="图片地址" prop="imageUrl">
+                                            <el-upload
+                                                    class="avatar-uploader"
+                                                    action="/lzadmin/news/upload"
+                                                    name="imageFile"
+                                                    :show-file-list="false"
+                                                    :on-success="handleAvatarSuccess"
+                                                    :before-upload="beforeAvatarUpload">
+                                                <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                            </el-upload>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="新闻内容" prop="content">
+                                            <quill-editor  v-model="formData.content"></quill-editor>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="新闻tab" prop="tab">
+                                            <el-select v-model="formData.tab" placeholder="请选择">
+                                                <el-option
+                                                        v-for="item in tabOptions"
+                                                        :key="item.value"
+                                                        :label="item.label"
+                                                        :value="item.value">
+                                                </el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="新闻状态" prop="status">
+                                            <el-select v-model="formData.status" placeholder="请选择">
+                                                <el-option
+                                                        v-for="item in statusOptions"
+                                                        :key="item.value"
+                                                        :label="item.label"
+                                                        :value="item.value">
+                                                </el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                            </el-form>
+                            <div slot="footer" class="dialog-footer">
+                                <el-button @click="dialogFormVisibleEdit = false">取消</el-button>
+                                <el-button type="primary" @click="handleEdit()">确定</el-button>
+                            </div>
+                        </el-dialog>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <!-- 引入组件库 -->
+    <script src="../js/vue.js"></script>
+    <script src="../plugins/elementui/index.js"></script>
+    <script type="text/javascript" src="../js/jquery.min.js"></script>
+    <script src="../js/axios-0.18.0.js"></script>
+    <script src="../plugins/quill/vue-quill-editor.js"></script>
+    <script>
+
+        var vue = new Vue({
+            el: '#app',
+            data:{
+                activeName:'first',
+                editorOption:{
+                    theme: 'snow',
+                    boundary: document.body,
+                    modules: {
+                        toolbar: [
+                            ['bold', 'italic', 'underline', 'strike'],
+                            ['blockquote', 'code-block'],
+                            [{ 'header': 1 }, { 'header': 2 }],
+                            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                            [{ 'script': 'sub' }, { 'script': 'super' }],
+                            [{ 'indent': '-1' }, { 'indent': '+1' }],
+                            [{ 'direction': 'rtl' }],
+                            [{ 'size': ['small', false, 'large', 'huge'] }],
+                            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                            [{ 'color': [] }, { 'background': [] }],
+                            [{ 'font': [] }],
+                            [{ 'align': [] }],
+                            ['clean'],
+                            ['link', 'image', 'video']
+                        ]
+                    },
+                    placeholder: 'Insert text here ...',
+                    readOnly: false
+                },
+                tabOptions: [{
+                    value: 1,
+                    label: '题库'
+                }, {
+                    value: 2,
+                    label: '升级',
+                }, {
+                    value: 3,
+                    label: '其他'
+                }],
+                statusOptions: [{
+                    value: 0,
+                    label: '正常'
+                }, {
+                    value: 1,
+                    label: '隐藏',
+                }],
+                pagination: {//分页相关模型数据
+					  currentPage: 1,//当前页码
+					  pageSize:10,//每页显示的记录数
+					  total:0,//总记录数
+					  queryString:null//查询条件
+				},
+				dataList: [],//当前页要展示的分页列表数据
+                subjectList: [],
+                tableData: {},
+                fbChoiceList: [{
+                   content: "",
+                }],
+                subjects:[],
+                judgeAnswer:[
+                    {
+                    value: '0',
+                    label: '正确'
+                    },
+                    {
+                        value: '1',
+                        label: '错误'
+                    }],
+                imageUrl:"",
+                formData: {
+                    topicStar:1,
+                    imageUrl:11
+                },//表单数据
+                dialogFormVisible: false,//增加表单是否可见
+                dialogFormVisibleEdit:false,
+                rules: {//校验规则
+                    subjectName: [{ required: true, message: '必填项', trigger: 'blur' }],
+                }
+
+            },
+            //钩子函数，VUE对象初始化完成后自动执行
+            created() {
+                this.findPage();
+            },
+            methods: {
+                handleAvatarSuccess(res,file){
+                    //res == CallResult
+                    this.imageUrl = res.result;
+                    this.formData.imageUrl = res.result;
+
+                },
+                beforeAvatarUpload(file){
+                    const isLt2M = file.size / 1024 / 1024 < 2;
+                    if (!isLt2M) {
+                        this.$message.error('上传图片大小不能超过 2MB!');
+                    }
+                    return isLt2M;
+                },
+                //编辑
+                handleEdit() {
+                    axios.post("/lzadmin/news/update",this.formData).then((res)=>{
+                        if (res.data.success){
+                            this.$message({
+                                message: '恭喜你，编辑成功',
+                                type: 'success'
+                            });
+                            this.dialogFormVisibleEdit = false;
+                            this.findPage();
+                        }
+                    });
+                },
+                //添加
+                handleAdd () {
+                    axios.post("/lzadmin/news/save",this.formData).then((res)=>{
+                        if (res.data.success){
+                            this.$message({
+                                message: '恭喜你，添加成功',
+                                type: 'success'
+                            });
+                            this.dialogFormVisible = false;
+                            this.findPage();
+                        }
+                    });
+                },
+                findSearchPage(){
+                    this.pagination.currentPage = 1;
+                    this.findPage();
+                },
+                //分页查询
+                findPage() {
+                    //post @RequestBody
+                    axios.post("/lzadmin/news/findPage",this.pagination).then((res)=>{
+                        //res.data = CallResult
+                        if (res.data.success){
+                            this.dataList = res.data.result.list;
+                            this.pagination.total = res.data.result.size;
+                        }
+                    });
+                },
+                // 重置表单
+                resetForm() {
+                    this.formData = {};
+                },
+                // 弹出添加窗口
+                handleCreate() {
+                    this.resetForm();
+                    this.dialogFormVisible = true;
+                },
+                // 弹出编辑窗口
+                handleUpdate(row) {
+                    this.resetForm();
+                    this.dialogFormVisibleEdit = true;
+                    axios.post("/lzadmin/news/findNewsById",{"id":row.id}).then((res)=>{
+                        if (res.data.success){
+                            this.formData  = res.data.result;
+                            this.imageUrl = this.formData.imageUrl;
+                        }
+                    });
+                },
+                //切换页码
+                handleCurrentChange(currentPage) {
+                    this.pagination.currentPage = currentPage;
+                    this.findPage();
+                },
+            }
+        });
+        Vue.use(window.VueQuillEditor);
+    </script>
+</html>
