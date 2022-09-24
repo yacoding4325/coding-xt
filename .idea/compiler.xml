@@ -7,6 +7,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="coding-xt-sso-provider" />
         <module name="coding-xt-admin-api" />
         <module name="coding-xt-web-api" />
         <module name="coding-xt-sso-domain" />
@@ -18,6 +19,7 @@
         <module name="coding-xt-sso-service" />
         <module name="coding-xt-sso-dao" />
         <module name="coding-xt-common-pojo" />
+        <module name="coding-xt-sso-dubbo-service" />
         <module name="coding-xt-sso-service-impl" />
         <module name="coding-xt-web-model" />
         <module name="coding-xt-web-service" />
@@ -44,7 +46,9 @@
       <module name="coding-xt-sso-api" options="-parameters" />
       <module name="coding-xt-sso-dao" options="-parameters" />
       <module name="coding-xt-sso-domain" options="-parameters" />
+      <module name="coding-xt-sso-dubbo-service" options="-parameters" />
       <module name="coding-xt-sso-model" options="-parameters" />
+      <module name="coding-xt-sso-provider" options="-parameters" />
       <module name="coding-xt-sso-service" options="-parameters" />
       <module name="coding-xt-sso-service-impl" options="-parameters" />
       <module name="coding-xt-web" options="-parameters" />

@@ -18,12 +18,10 @@
         <module>coding-xt-sso-model</module>
         <module>coding-xt-sso-service</module>
         <module>coding-xt-sso-service-impl</module>
+        <module>coding-xt-sso-dubbo-service</module>
+        <module>coding-xt-sso-provider</module>
     </modules>
 
-    <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
-    </properties>
     <dependencyManagement>
         <dependencies>
             <dependency>

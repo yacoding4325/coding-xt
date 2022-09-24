@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>coding-xt-sso-service-impl</artifactId>
+    <artifactId>coding-xt-sso-dubbo-service</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -18,24 +18,14 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.coding</groupId>
-            <artifactId>coding-xt-sso-service</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
         </dependency>
 
+        <!-- Dubbo Spring Boot Starter -->
         <dependency>
-            <groupId>com.coding</groupId>
-            <artifactId>coding-xt-sso-domain</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.github.binarywang</groupId>
-            <artifactId>weixin-java-mp</artifactId>
-            <version>3.8.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-spring-boot-starter</artifactId>
         </dependency>
 
         <dependency>
@@ -44,8 +34,13 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-spring-boot-starter</artifactId>
+            <groupId>com.coding</groupId>
+            <artifactId>coding-xt-sso-service</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.coding</groupId>
+            <artifactId>coding-xt-sso-domain</artifactId>
         </dependency>
     </dependencies>
 

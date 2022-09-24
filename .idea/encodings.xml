@@ -12,7 +12,9 @@
     <file url="file://$PROJECT_DIR$/coding-xt-sso/coding-xt-sso-api/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/coding-xt-sso/coding-xt-sso-dao/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/coding-xt-sso/coding-xt-sso-domain/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/coding-xt-sso/coding-xt-sso-dubbo-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/coding-xt-sso/coding-xt-sso-model/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/coding-xt-sso/coding-xt-sso-provider/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/coding-xt-sso/coding-xt-sso-service-impl/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/coding-xt-sso/coding-xt-sso-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/coding-xt-web/coding-xt-web-api/src/main/java" charset="UTF-8" />
