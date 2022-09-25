@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.coding.xt.web.dao.CourseMapper">
+    <resultMap id="CourseMap" type="com.coding.xt.pojo.Course">
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="course_name" property="courseName" jdbcType="VARCHAR" />
+        <result column="course_desc" property="courseDesc" jdbcType="VARCHAR" />
+        <result column="subjects" property="subjects" jdbcType="VARCHAR" />
+        <result column="course_price" property="coursePrice" jdbcType="DECIMAL" />
+        <result column="course_zhe_price" property="courseZhePrice" jdbcType="DECIMAL" />
+        <result column="course_status" property="courseStatus" jdbcType="INTEGER" />
+        <result column="order_time" property="orderTime" jdbcType="INTEGER" />
+        <result column="image_url" property="imageUrl" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <select id="findCourseByGrade" parameterType="string" resultMap="CourseMap">
+        select * from t_course where course_status = 0
+                                 and id in
+                                     (select course_id from t_course_subject
+                                      where subject_id in
+                                            ( select id from t_subject where subject_grade=#{subjectGrade})
+                                      group by course_id
+                                     )
+    </select>
+</mapper>
