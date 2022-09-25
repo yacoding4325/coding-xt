@@ -2,7 +2,7 @@ package com.coding.xt.web.api;
 
 import com.coding.xt.common.cache.Cache;
 import com.coding.xt.common.model.CallResult;
-import com.coding.xt.model.service.NewsService;
+import com.coding.xt.web.service.NewsService;
 import com.coding.xt.web.model.params.NewsParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

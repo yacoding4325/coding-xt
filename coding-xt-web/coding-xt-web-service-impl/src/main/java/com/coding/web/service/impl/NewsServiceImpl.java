@@ -5,7 +5,7 @@ import com.coding.web.domain.NewsDomain;
 import com.coding.web.domain.repository.NewsDomainRepository;
 import com.coding.xt.common.model.CallResult;
 import com.coding.xt.common.service.AbstractTemplateAction;
-import com.coding.xt.model.service.NewsService;
+import com.coding.xt.web.service.NewsService;
 import com.coding.xt.web.model.params.NewsParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
