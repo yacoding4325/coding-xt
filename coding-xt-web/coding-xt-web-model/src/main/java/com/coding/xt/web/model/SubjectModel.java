@@ -1,12 +1,14 @@
 package com.coding.xt.web.model;
 
+import lombok.Data;
+
 import java.util.List;
 
 /**
  * @Author yaCoding
  * @create 2022-09-25 上午 11:08
  */
-
+@Data
 public class SubjectModel {
 
     private Long id;
@@ -25,15 +27,4 @@ public class SubjectModel {
         this.subjectName = this.subjectName + "-" +subjectGrade + "-" + subjectTerm;
     }
 
-    public String getSubjectName() {
-        return subjectName;
-    }
-
-    public String getSubjectGrade() {
-        return subjectGrade;
-    }
-
-    public String getSubjectTerm() {
-        return subjectTerm;
-    }
 }
