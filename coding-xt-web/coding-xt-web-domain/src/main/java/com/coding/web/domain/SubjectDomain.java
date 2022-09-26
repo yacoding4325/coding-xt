@@ -4,11 +4,13 @@ import com.coding.web.domain.repository.SubjectDomainRepository;
 import com.coding.xt.common.model.CallResult;
 import com.coding.xt.common.utils.CommonUtils;
 import com.coding.xt.pojo.Subject;
+import com.coding.xt.pojo.SubjectUnit;
 import com.coding.xt.web.model.SubjectModel;
 import com.coding.xt.web.model.params.SubjectParam;
 import org.springframework.beans.BeanUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @Author yaCoding
@@ -75,5 +77,10 @@ public class SubjectDomain {
     public List<SubjectModel> findSubjectListByCourseId(Long courseId) {
         List<Subject> subjectList = subjectDomainRepository.findSubjectListByCourseId(courseId);
         return copyList(subjectList);
+    }
+
+    public List<Integer> findSubjectUnitBySubjectId(Long subjectId) {
+        List<SubjectUnit> subjectUnitList = this.subjectDomainRepository.findUnitBySubjectId(subjectId);
+        return subjectUnitList.stream().map(SubjectUnit::getSubjectUnit).collect( Collectors.toList());
     }
 }

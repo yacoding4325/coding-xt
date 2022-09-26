@@ -29,4 +29,21 @@ public class CourseServiceImpl extends AbstractService implements CourseService 
             }
         });
     }
+
+    @Override
+    public CallResult subjectInfo(CourseParam courseParam) {
+        CourseDomain courseDomain = this.courseDomainRepository.createDomain(courseParam);
+        return this.serviceTemplate.executeQuery(new AbstractTemplateAction<Object>() {
+            //业务校验
+            @Override
+            public CallResult<Object> checkParam() {
+                return courseDomain.checkSubjectInfoParam();
+            }
+
+            @Override
+            public CallResult<Object> doAction() {
+                return courseDomain.subjectInfo();
+            }
+        });
+    }
 }

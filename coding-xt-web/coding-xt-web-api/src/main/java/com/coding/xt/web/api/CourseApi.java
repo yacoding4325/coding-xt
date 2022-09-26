@@ -32,4 +32,14 @@ public class CourseApi {
         return courseService.courseList(courseParam);
     }
 
+    /**
+     * 主题信息
+     * @param courseParam
+     * @return
+     */
+    @RequestMapping("subjectInfo")
+    public CallResult subjectInfo(@RequestBody CourseParam courseParam){
+        return courseService.subjectInfo(courseParam);
+    }
+
 }

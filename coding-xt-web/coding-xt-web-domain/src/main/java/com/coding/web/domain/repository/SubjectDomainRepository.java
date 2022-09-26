@@ -1,10 +1,14 @@
 package com.coding.web.domain.repository;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.coding.web.domain.SubjectDomain;
 import com.coding.xt.common.enums.Status;
 import com.coding.xt.pojo.Subject;
+import com.coding.xt.pojo.SubjectUnit;
 import com.coding.xt.web.dao.SubjectMapper;
+import com.coding.xt.web.dao.SubjectUnitMapper;
 import com.coding.xt.web.model.params.SubjectParam;
 import org.springframework.stereotype.Component;
 
@@ -33,6 +37,15 @@ public class SubjectDomainRepository {
 
     public List<Subject> findSubjectListByCourseId(Long courseId) {
         return subjectMapper.findSubjectListByCourseId(courseId);
+    }
+
+    @Resource
+    private SubjectUnitMapper subjectUnitMapper;
+
+    public List<SubjectUnit> findUnitBySubjectId(Long subjectId) {
+        LambdaQueryWrapper<SubjectUnit> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(SubjectUnit::getSubjectId,subjectId);
+        return subjectUnitMapper.selectList(queryWrapper);
     }
 
 }

@@ -60,4 +60,9 @@ public class CourseDomainRepository {
     public SubjectDomain createSubjectDomain(SubjectParam subjectParam) {
         return this.subjectDomainRepository.createDomain(subjectParam);
     }
+
+    //按照id查找课程
+    public Course findCourseById(Long courseId) {
+        return courseMapper.selectById(courseId);
+    }
 }
