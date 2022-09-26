@@ -1,5 +1,7 @@
 package com.coding.web.domain;
 
+import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.coding.web.domain.repository.CourseDomainRepository;
 import com.coding.xt.common.login.UserThreadLocal;
@@ -7,10 +9,14 @@ import com.coding.xt.common.model.BusinessCodeEnum;
 import com.coding.xt.common.model.CallResult;
 import com.coding.xt.common.model.ListPageModel;
 import com.coding.xt.pojo.Course;
+import com.coding.xt.pojo.CourseSubject;
 import com.coding.xt.pojo.UserCourse;
+import com.coding.xt.pojo.UserHistory;
+import com.coding.xt.web.dao.CourseSubjectMapper;
 import com.coding.xt.web.model.CourseViewModel;
 import com.coding.xt.web.model.SubjectModel;
 import com.coding.xt.web.model.SubjectViewModel;
+import com.coding.xt.web.model.enums.HistoryStatus;
 import com.coding.xt.web.model.params.CourseParam;
 import com.coding.xt.web.model.params.SubjectParam;
 import com.coding.xt.web.model.params.UserCourseParam;
@@ -20,8 +26,10 @@ import org.omg.PortableInterceptor.INACTIVE;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Author yaCoding
@@ -31,7 +39,11 @@ import java.util.List;
 public class CourseDomain {
 
     private CourseDomainRepository courseDomainRepository;
+
     private CourseParam courseParam;
+
+    @Resource
+    private CourseSubjectMapper courseSubjectMapper;
 
     public CourseDomain(CourseDomainRepository courseDomainRepository, CourseParam courseParam) {
         this.courseDomainRepository = courseDomainRepository;
@@ -117,7 +129,7 @@ public class CourseDomain {
          * 3.返回对应的模型数据即可
          * 4.不做业务逻辑（如果此课程已经学习过程中，直接返回当初选择的课程）
          */
-//        Long userId = UserThreadLocal.get();
+        Long userId = UserThreadLocal.get();
         Long courseId = this.courseParam.getCourseId();
 //        Course course = this.courseDomainRepository.findCourseById(courseId);
 //        if (course == null){
@@ -137,16 +149,16 @@ public class CourseDomain {
             subjectViewModel.setSubjectUnitList(subjectUnitList);
 //            subjectViewModel.setSubjectUnitList(subjectUnitList);
             subjectViewModelList.add(subjectViewModel);
-//            if (userId != null){
-//                UserHistory userHistory = this.courseDomainRepository.createTopicDomain(null).findUserHistory(userId, subject.getId(), HistoryStatus.NO_FINISH.getCode());
-//                if (userHistory != null) {
-//                    String subjectUnits = userHistory.getSubjectUnits();
-//                    if (StringUtils.isNotEmpty(subjectUnits)) {
-//                        List<Integer> strings = JSON.parseArray(subjectUnits, Integer.class);
-//                        subjectViewModel.setSubjectUnitSelectedList(strings);
-//                    }
-//                }
-//            }
+            if (userId != null){
+                UserHistory userHistory = this.courseDomainRepository.createUserHistoryDomain(null).findUserHistory(userId, subjectModel.getId(), HistoryStatus.NO_FINISH.getCode());
+                if (userHistory != null) {
+                    String subjectUnits = userHistory.getSubjectUnits();
+                    if (StringUtils.isNotEmpty(subjectUnits)) {
+                        List<Integer> strings = JSON.parseArray(subjectUnits, Integer.class);
+                        subjectViewModel.setSubjectUnitSelectedList(strings);
+                    }
+                }
+            }
         }
         return CallResult.success(subjectModelList);
     }
@@ -159,4 +171,20 @@ public class CourseDomain {
         }
         return CallResult.success();
     }
+
+    public List<Long> findCourseIdListBySubjectId(Long subjectId) {
+        return courseDomainRepository.findCourseIdListBySubjectId(subjectId);
+    }
+
+
+    public List<Long> findCourseIdBySubject(Long subjectId) {
+        LambdaQueryWrapper<CourseSubject> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(CourseSubject::getSubjectId,subjectId);
+        queryWrapper.select(CourseSubject::getCourseId);
+        List<CourseSubject> courseSubjects = courseSubjectMapper.selectList(queryWrapper);
+        return courseSubjects.stream().map(CourseSubject::getCourseId).collect(Collectors.toList());
+//        return this.courseDomainRepository.findCourseIdBySubject(subjectId);
+    }
+
+
 }

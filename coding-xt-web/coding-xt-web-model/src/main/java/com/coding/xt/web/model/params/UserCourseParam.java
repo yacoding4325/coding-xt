@@ -10,4 +10,15 @@ import lombok.Data;
 @Data
 public class UserCourseParam {
 
+    public Long getCourseId() {
+        return null;
+    }
+
+    public Long getUserId() {
+        return null;
+    }
+
+    public Long getTime() {
+        return null;
+    }
 }

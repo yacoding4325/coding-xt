@@ -8,6 +8,7 @@ import com.coding.xt.web.model.params.UserCourseParam;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @Author yaCoding
@@ -37,4 +38,18 @@ public class UserCourseDomainRepository {
         return userCourseMapper.selectCount(queryWrapper);
     }
 
+    public Integer countUserCourseByUserId(List<Long> courseIdList, long currentTimeMillis) {
+        LambdaQueryWrapper<UserCourse> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(UserCourse::getCourseId,courseIdList);
+        queryWrapper.ge(UserCourse::getExpireTime,currentTimeMillis);
+        return userCourseMapper.selectCount(queryWrapper);
+    }
+
+    public Integer countUserCourse(Long courseId) {
+        return null;
+    }
+
+    public UserCourse findUserCourseByUserIdAndCourseId(Long courseId, Long userId, Long time) {
+        return null;
+    }
 }

@@ -1,19 +1,26 @@
 package com.coding.web.domain.repository;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.coding.web.domain.CourseDomain;
 import com.coding.web.domain.SubjectDomain;
 import com.coding.web.domain.UserCourseDomain;
+import com.coding.web.domain.UserHistoryDomain;
 import com.coding.xt.pojo.Course;
+import com.coding.xt.pojo.CourseSubject;
 import com.coding.xt.web.dao.CourseMapper;
+import com.coding.xt.web.dao.CourseSubjectMapper;
 import com.coding.xt.web.model.params.CourseParam;
 import com.coding.xt.web.model.params.SubjectParam;
 import com.coding.xt.web.model.params.UserCourseParam;
+import com.coding.xt.web.model.params.UserHistoryParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Author yaCoding
@@ -26,11 +33,17 @@ public class CourseDomainRepository {
     @Resource
     private CourseMapper courseMapper;
 
+    @Resource
+    private CourseSubjectMapper courseSubjectMapper;
+
     @Autowired
     private UserCourseDomainRepository userCourseDomainRepository;
 
     @Autowired
     private SubjectDomainRepository subjectDomainRepository;
+
+    @Autowired
+    private UserHistoryDomainRepository userHistoryDomainRepository;
 
     public CourseDomain createDomain(CourseParam courseParam){
         return new CourseDomain(this,courseParam);
@@ -64,5 +77,21 @@ public class CourseDomainRepository {
     //按照id查找课程
     public Course findCourseById(Long courseId) {
         return courseMapper.selectById(courseId);
+    }
+
+    public UserHistoryDomain createUserHistoryDomain(UserHistoryParam userHistoryParam) {
+        return userHistoryDomainRepository.createDomain(userHistoryParam);
+    }
+
+    public List<Long> findCourseIdListBySubjectId(Long subjectId) {
+        LambdaQueryWrapper<CourseSubject> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(CourseSubject::getSubjectId,subjectId);
+        List<CourseSubject> courseSubjects = this.courseSubjectMapper.selectList(queryWrapper);
+
+        return courseSubjects.stream().map(CourseSubject::getCourseId).collect(Collectors.toList());
+    }
+
+    public List<Long> findCourseIdBySubject(Long subjectId) {
+        return null;
     }
 }

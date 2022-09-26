@@ -83,4 +83,14 @@ public class SubjectDomain {
         List<SubjectUnit> subjectUnitList = this.subjectDomainRepository.findUnitBySubjectId(subjectId);
         return subjectUnitList.stream().map(SubjectUnit::getSubjectUnit).collect( Collectors.toList());
     }
+
+    public SubjectModel findSubject(Long subjectId) {
+        Subject subject = subjectDomainRepository.findById(subjectId);
+        return copy(subject);
+    }
+
+    private SubjectModel copy(Subject subject) {
+        return null;
+    }
+
 }
