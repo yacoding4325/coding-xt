@@ -92,4 +92,7 @@ public class TopicDomainRepository {
         return subjectDomainRepository.createDomain(subjectParam);
     }
 
+    public TopicDTO findTopicAnswer(Long topicId, Long id) {
+        return null;
+    }
 }

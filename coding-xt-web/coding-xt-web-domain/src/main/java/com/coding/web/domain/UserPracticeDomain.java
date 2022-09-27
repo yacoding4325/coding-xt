@@ -47,4 +47,12 @@ public class UserPracticeDomain {
     public UserPractice findUserPracticeByTopicId(Long userId, Long topicId, Long userHistoryId) {
         return userPracticeDomainRepository.findUserPracticeByTopicId(userId, topicId, userHistoryId);
     }
+
+    public int countUserPracticeTrueNum(Long id) {
+        return 0;
+    }
+
+    public int countUserPracticeWrongNum(Long id) {
+        return 0;
+    }
 }
