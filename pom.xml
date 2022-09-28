@@ -8,6 +8,7 @@
     <artifactId>coding-xt</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+
     <modules>
         <module>coding-xt-common</module>
         <module>coding-xt-sso</module>
@@ -32,68 +33,110 @@
     <!--管理依赖  子模块在使用jar包的时候，不用加版本号-->
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <version>2.5.0</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-starter-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter</artifactId>
+                <version>2.5.0</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-starter-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!--异步日志依赖 -->
+            <dependency>
+                <groupId>com.lmax</groupId>
+                <artifactId>disruptor</artifactId>
+                <version>3.4.2</version>
+            </dependency>
+
             <!--微信支付-->
             <dependency>
                 <groupId>com.github.binarywang</groupId>
                 <artifactId>weixin-java-mp</artifactId>
                 <version>${weixin.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.github.binarywang</groupId>
                 <artifactId>weixin-java-pay</artifactId>
                 <version>${weixin.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.github.binarywang</groupId>
                 <artifactId>weixin-java-open</artifactId>
                 <version>${weixin.version}</version>
             </dependency>
+
             <!--mybatis-->
             <dependency>
                 <groupId>org.mybatis.spring.boot</groupId>
                 <artifactId>mybatis-spring-boot-starter</artifactId>
                 <version>1.3.2</version>
             </dependency>
+
             <!--mybatis plus-->
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-boot-starter</artifactId>
                 <version>3.4.1</version>
             </dependency>
+
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-annotation</artifactId>
                 <version>3.4.1</version>
                 <scope>compile</scope>
             </dependency>
+
             <!--sharding-jdbc 读写分离 分库分表-->
             <dependency>
                 <groupId>org.apache.shardingsphere</groupId>
                 <artifactId>shardingsphere-jdbc-core-spring-boot-starter</artifactId>
                 <version>${shardingsphere.version}</version>
             </dependency>
+
             <!--时间处理工具类-->
             <dependency>
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
                 <version>2.10.10</version>
             </dependency>
+
             <!--POI报表-->
             <dependency>
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi</artifactId>
                 <version>3.14</version>
             </dependency>
+
             <dependency>
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi-ooxml</artifactId>
                 <version>3.14</version>
             </dependency>
+
             <dependency>
                 <groupId>io.jsonwebtoken</groupId>
                 <artifactId>jjwt</artifactId>
                 <version>0.9.1</version>
             </dependency>
+
             <dependency>
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
@@ -106,6 +149,7 @@
                 <artifactId>dubbo-spring-boot-starter</artifactId>
                 <version>${dubbo.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo</artifactId>
@@ -125,11 +169,24 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+
             <!-- Dubbo Registry Nacos -->
             <dependency>
                 <groupId>com.alibaba.nacos</groupId>
                 <artifactId>nacos-client</artifactId>
                 <version>2.0.3</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-client</artifactId>
+                <version>4.8.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.rocketmq</groupId>
+                <artifactId>rocketmq-spring-boot-starter</artifactId>
+                <version>2.2.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
