@@ -95,4 +95,16 @@ public class TopicDomainRepository {
     public TopicDTO findTopicAnswer(Long topicId, Long id) {
         return null;
     }
+
+    public Topic findTopicById(Long topicId) {
+        return null;
+    }
+
+    public UserHistoryDomain createUserHistoryDomain(Object o) {
+        return null;
+    }
+
+    public UserProblemDomain createUserProblem(Object o) {
+        return null;
+    }
 }

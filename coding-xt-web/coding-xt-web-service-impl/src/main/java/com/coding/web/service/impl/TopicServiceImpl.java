@@ -37,4 +37,22 @@ public class TopicServiceImpl extends AbstractService implements TopicService {
             }
         });
     }
+
+    //实现类--提交功能
+    @Override
+    @Transactional
+    public CallResult submit(TopicParam topicParam) {
+        TopicDomain topicDomain = this.topicDomainRepository.createDomain(topicParam);
+        return this.serviceTemplate.execute(new AbstractTemplateAction<Object>() {
+            @Override
+            public CallResult<Object> checkBiz() {
+                return topicDomain.checkSubmitBiz();
+            }
+
+            @Override
+            public CallResult<Object> doAction() {
+                return topicDomain.submit();
+            }
+        });
+    }
 }

@@ -15,4 +15,11 @@ public interface TopicService {
      * @return
      */
     CallResult practice(TopicParam topicParam);
+
+    /**
+     * 提交
+     * @param topicParam
+     * @return
+     */
+    CallResult submit(TopicParam topicParam);
 }

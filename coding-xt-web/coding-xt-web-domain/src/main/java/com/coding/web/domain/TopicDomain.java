@@ -1,5 +1,6 @@
 package com.coding.web.domain;
 
+import ch.qos.logback.core.status.ErrorStatus;
 import com.alibaba.fastjson.JSON;
 import com.coding.web.domain.repository.TopicDomainRepository;
 import com.coding.xt.common.enums.TopicType;
@@ -8,19 +9,15 @@ import com.coding.xt.common.model.BusinessCodeEnum;
 import com.coding.xt.common.model.CallResult;
 import com.coding.xt.common.model.topic.ContentAndImage;
 import com.coding.xt.common.model.topic.FillBlankChoice;
-import com.coding.xt.pojo.Course;
-import com.coding.xt.pojo.UserHistory;
-import com.coding.xt.pojo.UserPractice;
+import com.coding.xt.pojo.*;
 import com.coding.xt.web.dao.TopicDTO;
-import com.coding.xt.web.model.PracticeDetailModel;
-import com.coding.xt.web.model.SubjectModel;
-import com.coding.xt.web.model.SubjectViewModel;
-import com.coding.xt.web.model.TopicModelView;
+import com.coding.xt.web.model.*;
 import com.coding.xt.web.model.enums.HistoryStatus;
 import com.coding.xt.web.model.params.TopicParam;
 import jdk.nashorn.internal.codegen.CompilerConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.CollectionUtils;
 
@@ -38,6 +35,8 @@ public class TopicDomain {
 
     private TopicDomainRepository topicDomainRepository;
     private TopicParam topicParam;
+    private Topic topic;
+    private UserHistory userHistory;
 
     public TopicDomain(TopicDomainRepository topicDomainRepository, TopicParam topicParam) {
         this.topicDomainRepository = topicDomainRepository;
@@ -275,4 +274,129 @@ public class TopicDomain {
         topicModel.setLastUpdateTime(new DateTime(topic.getLastUpdateTime()).toString("yyyy-MM-dd"));
         return topicModel;
     }
+
+    //业务检查
+    public CallResult<Object> checkSubmitBiz() {
+        Long topicId = topicParam.getTopicId();
+        Long practiceId = topicParam.getPracticeId();
+        Long userId = UserThreadLocal.get();
+        Topic topic = this.topicDomainRepository.findTopicById(topicId);
+        if (topic == null) {
+            return CallResult.fail(BusinessCodeEnum.TOPIC_NOT_EXIST.getCode(),"topic not exist");
+        }
+        UserHistory userHistory = this.topicDomainRepository.createHistoryDomain(null).findUserHistoryById(userId,practiceId);
+        if (userHistory == null) {
+            return CallResult.fail(BusinessCodeEnum.PRACTICE_NO_EXIST.getCode(),"练习题不存在");
+        }
+        if (userHistory.getHistoryStatus() == 2) {
+            return CallResult.fail(BusinessCodeEnum.PRACTICE_FINISHED.getCode(),BusinessCodeEnum.PRACTICE_FINISHED.getMsg());
+        }
+        if (userHistory.getHistoryStatus() == 3) {
+            return CallResult.fail(BusinessCodeEnum.PRACTICE_CANCEL.getCode(),BusinessCodeEnum.PRACTICE_CANCEL.getMsg());
+        }
+        this.topic = topic;
+        this.userHistory = userHistory;
+        return CallResult.success();
+    }
+
+    //执行业务
+    public CallResult<Object> submit() {
+        Long topicId = topicParam.getTopicId();
+        Long userId = UserThreadLocal.get();
+        String answer = topicParam.getAnswer();
+        boolean finish = false;
+        boolean answerFlag = false;
+        //1. 填空题 选择题 判断题
+        //2
+        String topicAnswer = topic.getTopicAnswer();
+        Integer topicType = topic.getTopicType();
+        if (topicType == TopicType.FILL_BLANK.getCode()) {
+            if (!StringUtils.isEmpty(answer)) {
+                String[] str = answer.split("\\$#\\$");
+                TopicDTO topicDTO = new TopicDTO();
+                BeanUtils.copyProperties(topic, topicDTO);
+                TopicModelView topicModel = getTopicModelView(topicDTO);
+                if (str.length == topicModel.getFillBlankTopicChoice()) {
+                    for (int i = 0; i < str.length; i++) {
+                        FillBlankChoice anObject = topicModel.getFillBlankAnswer().get(i);
+                        Logger log = null;
+                        log.info("提交答案:{}", str[i]);
+                        log.info("正确答案:{}", anObject);
+                        if (str[i].equals(anObject.getContent())) {
+                            answerFlag = true;
+                        } else {
+                            answerFlag = false;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        if (topicType == TopicType.RADIO.getCode()) {
+            if (topicAnswer.equals(answer)) {
+                answerFlag = true;
+            }
+        }
+        if (topicType == TopicType.MUL_CHOICE.getCode()) {
+            //数据库 A,B,C 前端传递的答案 A,B,C
+            if (topicAnswer.equals(answer)) {
+                answerFlag = true;
+            }
+        }
+        if (topicType == TopicType.JUDGE.getCode()) {
+            if (topicAnswer.equals(answer)) {
+                answerFlag = true;
+            }
+        }
+        UserHistoryDomain historyDomain = this.topicDomainRepository.createUserHistoryDomain(null);
+        UserProblemDomain userProblemDomain = this.topicDomainRepository.createUserProblem(null);
+        UserPracticeDomain userPracticeDomain = this.topicDomainRepository.createUserPracticeDomain(null);
+
+        if (!answerFlag) {
+            //要加入错题本
+//加入错题本
+            UserProblem userProblem = userProblemDomain.getUserProblem(userId, topicId);
+            if (userProblem == null) {
+                userProblem = new UserProblem();
+                userProblem.setErrorCount(1);
+                userProblem.setErrorStatus(ErrorStatus.ERROR);
+                userProblem.setUserId(userId);
+                userProblem.setTopicId(topicId);
+                userProblem.setSubjectId(topicParam.getSubjectId());
+                userProblem.setErrorAnswer(answer);
+                userProblem.setErrorTime(System.currentTimeMillis());
+                userProblemDomain.saveUserProblem(userProblem);
+            } else {
+                userProblemDomain.updateUserProblemErrorCount(userId, topicId, answer);
+            }
+            userPracticeDomain.updateUserPractice(userHistory.getId(), topicId, userId, answer, 1);
+        } else {
+            userPracticeDomain.updateUserPractice(userHistory.getId(), topicId, userId, answer, 2);
+        }
+        Integer progress = userHistory.getProgress();
+        if (progress >= userHistory.getTopicTotal()) {
+            //已经是最后一道题了,更新状态已完成和完成时间
+            historyDomain.updateUserHistoryStatus(userHistory.getId(), HistoryStatus.FINISHED.getCode(), System.currentTimeMillis());
+            finish = true;
+        }
+        TopicSubmitModel topicSubmitModel = new TopicSubmitModel();
+        //答案是否正确
+        topicSubmitModel.setAnswerFlag(answerFlag);
+        topicSubmitModel.setFinish(finish);
+        //答案 如果是填空题 并且有多个空 前端 传递过来的  第一个答案$#$第二个答案...
+        //给前端返回的是 此道题的正确答案
+        topicSubmitModel.setAnswer(topicAnswer);
+        if (topic.getTopicType() == TopicType.FILL_BLANK.getCode()){
+            TopicDTO topicDTO = new TopicDTO();
+            BeanUtils.copyProperties(topic, topicDTO);
+            TopicModelView topicModel = getTopicModelView(topicDTO);
+            StringBuilder fillBlankAnswer = new StringBuilder();
+            for (FillBlankChoice fillBlankChoice : topicModel.getFillBlankAnswer()){
+                fillBlankAnswer.append(fillBlankChoice.getId()).append(".").append(fillBlankChoice.getContent()).append(";");
+            }
+            topicSubmitModel.setAnswer(fillBlankAnswer.toString());
+        }
+
+        topicSubmitModel.setTopicType(topicType);
+        return CallResult.success(topicSubmitModel);    }
 }

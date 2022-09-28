@@ -44,4 +44,16 @@ public class UserHistoryDomainRepository {
     public void save(UserHistory userHistory) {
         this.userHistoryMapper.insert(userHistory);
     }
+
+    public void updateUserHistoryErrorCount(Long userHistoryId) {
+
+    }
+
+    public void updateUserHistoryStatus(Long historyId, int historyStatus, long finishTime) {
+
+    }
+
+    public void updateUserHistoryProgress(Long historyId) {
+
+    }
 }

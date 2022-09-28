@@ -55,4 +55,8 @@ public class UserPracticeDomain {
     public int countUserPracticeWrongNum(Long id) {
         return 0;
     }
+
+    public void updateUserPractice(Long userHistoryId, Long topicId, Long userId, String answer, int pStatus) {
+        userPracticeDomainRepository.updateUserPractice(userHistoryId,topicId,userId,answer,pStatus);
+    }
 }
