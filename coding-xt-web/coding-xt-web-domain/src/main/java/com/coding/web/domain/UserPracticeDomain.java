@@ -44,16 +44,9 @@ public class UserPracticeDomain {
         return userPracticeDomainRepository.findUserPracticeTopic(userId,userHistoryId,progress);
     }
 
+
     public UserPractice findUserPracticeByTopicId(Long userId, Long topicId, Long userHistoryId) {
         return userPracticeDomainRepository.findUserPracticeByTopicId(userId, topicId, userHistoryId);
-    }
-
-    public int countUserPracticeTrueNum(Long id) {
-        return 0;
-    }
-
-    public int countUserPracticeWrongNum(Long id) {
-        return 0;
     }
 
     public void updateUserPractice(Long userHistoryId, Long topicId, Long userId, String answer, int pStatus) {

@@ -32,7 +32,6 @@ public class CourseDomainRepository {
 
     @Resource
     private CourseMapper courseMapper;
-
     @Resource
     private CourseSubjectMapper courseSubjectMapper;
 
@@ -74,7 +73,6 @@ public class CourseDomainRepository {
         return this.subjectDomainRepository.createDomain(subjectParam);
     }
 
-    //按照id查找课程
     public Course findCourseById(Long courseId) {
         return courseMapper.selectById(courseId);
     }
@@ -87,11 +85,7 @@ public class CourseDomainRepository {
         LambdaQueryWrapper<CourseSubject> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(CourseSubject::getSubjectId,subjectId);
         List<CourseSubject> courseSubjects = this.courseSubjectMapper.selectList(queryWrapper);
-
         return courseSubjects.stream().map(CourseSubject::getCourseId).collect(Collectors.toList());
     }
 
-    public List<Long> findCourseIdBySubject(Long subjectId) {
-        return null;
-    }
 }

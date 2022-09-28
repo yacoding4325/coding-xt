@@ -28,7 +28,7 @@ public class UserProblemDomainRepository {
     public UserProblem getUserProblem(Long userId, Long topicId) {
         LambdaQueryWrapper<UserProblem> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(UserProblem::getTopicId,topicId);
-        queryWrapper.eq(UserProblem::getUserId, userId);
+        queryWrapper.eq(UserProblem::getUserId,userId);
         queryWrapper.last("limit 1");
         return userProblemMapper.selectOne(queryWrapper);
     }
@@ -43,6 +43,8 @@ public class UserProblemDomainRepository {
         update.eq("topic_id",topicId);
         update.set("error_count","error_count+1");
         update.set("answer",answer);
+        //加锁操作 没有别的操作 会影响
+        //update table set error_count=error_count+1 where user_id=111 and topic_id=222
         userProblemMapper.update(null, update);
     }
 }

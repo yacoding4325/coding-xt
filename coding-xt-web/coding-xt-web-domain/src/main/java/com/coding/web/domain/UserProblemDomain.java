@@ -19,7 +19,6 @@ public class UserProblemDomain {
         this.userProblemParam = userProblemParam;
     }
 
-
     public UserProblem getUserProblem(Long userId, Long topicId) {
         return userProblemDomainRepository.getUserProblem(userId,topicId);
     }

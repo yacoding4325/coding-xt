@@ -38,18 +38,11 @@ public class UserCourseDomainRepository {
         return userCourseMapper.selectCount(queryWrapper);
     }
 
-    public Integer countUserCourseByUserId(List<Long> courseIdList, long currentTimeMillis) {
+    public Integer countUserCourseInCourseIdList(Long userId, List<Long> courseIdList, long currentTimeMillis) {
         LambdaQueryWrapper<UserCourse> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserCourse::getUserId,userId);
         queryWrapper.in(UserCourse::getCourseId,courseIdList);
         queryWrapper.ge(UserCourse::getExpireTime,currentTimeMillis);
         return userCourseMapper.selectCount(queryWrapper);
-    }
-
-    public Integer countUserCourse(Long courseId) {
-        return null;
-    }
-
-    public UserCourse findUserCourseByUserIdAndCourseId(Long courseId, Long userId, Long time) {
-        return null;
     }
 }

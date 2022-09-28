@@ -26,6 +26,7 @@ public class NewsDomainRepository {
     @Resource
     private NewsMapper newsMapper;
 
+
     public NewsDomain createDomain(NewsParam newsParam) {
         return new NewsDomain(this,newsParam);
     }
@@ -42,5 +43,4 @@ public class NewsDomainRepository {
     public News findNewsById(Long id) {
         return newsMapper.selectById(id);
     }
-
 }

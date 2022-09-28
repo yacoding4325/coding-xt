@@ -27,5 +27,10 @@ public class TopicApi {
         return topicService.submit(topicParam);
     }
 
+    @PostMapping("jump")
+    public CallResult jump(@RequestBody TopicParam topicParam){
+        return topicService.jump(topicParam);
+    }
+
 }
 

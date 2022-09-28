@@ -5,10 +5,8 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * @Author yaCoding
- * @create 2022-09-26 下午 4:05
+ * @author Jarno
  */
-//主题参数
 @Data
 public class TopicParam {
     private Long id;

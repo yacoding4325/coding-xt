@@ -22,4 +22,11 @@ public interface TopicService {
      * @return
      */
     CallResult submit(TopicParam topicParam);
+
+    /**
+     * 挑转下一题
+     * @param topicParam
+     * @return
+     */
+    CallResult jump(TopicParam topicParam);
 }

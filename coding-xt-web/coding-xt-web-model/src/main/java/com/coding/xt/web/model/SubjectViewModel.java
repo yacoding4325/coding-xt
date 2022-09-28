@@ -5,28 +5,20 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * @Author yaCoding
- * @create 2022-09-26 下午 2:48
+ * @author Jarno
  */
 @Data
 public class SubjectViewModel {
-
     private Long id;
-
     private String subjectName;
-
     private String subjectGrade;
-
     private String subjectTerm;
 
+    private List<Integer> subjectUnitList;
 
-    private List<Integer> SubjectUnitList;
-
-    //所选列表
-    private List<Integer> SubjectUnitSelectedList;
+    private List<Integer> subjectUnitSelectedList;
 
     public void fillSubjectName() {
         this.subjectName = this.subjectName + "-" +subjectGrade + "-" + subjectTerm;
     }
-
 }

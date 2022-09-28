@@ -4,12 +4,12 @@ import lombok.Data;
 
 import java.util.List;
 import java.util.Map;
-//实践详细模型
+
 @Data
 public class PracticeDetailModel {
     private TopicModelView topic;
     private Integer total;
-    private Long practiceId;
+    private String practiceId;
     private String createTime;
     private String finishTime;
     private String useTime;

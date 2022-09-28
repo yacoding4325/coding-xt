@@ -14,35 +14,22 @@ import java.util.List;
 public class UserCourseDomain {
 
     private UserCourseDomainRepository userCourseDomainRepository;
-    private UserCourseParam courseParam;
+    private UserCourseParam userCourseParam;
 
-    public UserCourseDomain(UserCourseDomainRepository userCourseDomainRepository, UserCourseParam courseParam) {
+    public UserCourseDomain(UserCourseDomainRepository userCourseDomainRepository, UserCourseParam userCourseParam) {
         this.userCourseDomainRepository = userCourseDomainRepository;
-        this.courseParam = courseParam;
+        this.userCourseParam = userCourseParam;
     }
 
-    public Integer countUserCourse(Long courseId) {
-        return userCourseDomainRepository.countUserCourse(courseId);
+    public UserCourse findUserCourse(Long userId, Long courseId,long currentTime) {
+        return userCourseDomainRepository.findUserCourse(userId,courseId,currentTime);
     }
 
-    public UserCourse findUserCourseByUserIdAndCourseId() {
-        Long courseId = courseParam.getCourseId();
-        Long userId = courseParam.getUserId();
-        Long time = courseParam.getTime();
-        return userCourseDomainRepository.findUserCourseByUserIdAndCourseId(courseId,userId,time);
+    public long countUserCourseByCourseId(Long courseId) {
+        return userCourseDomainRepository.countUserCourseByCourseId(courseId);
     }
 
-
-
-    public long countUserCourseByCourseId(Long id) {
-        return 0;
-    }
-
-    public UserCourse findUserCourse(Long userId, Long id, long currentTimeMillis) {
-        return null;
-    }
-
-    public Integer countUserCourseByUserId(Long userId, List<Long> courseIdList, long currentTimeMillis) {
-        return null;
+    public Integer countUserCourseInCourseIdList(Long userId, List<Long> courseIdList, long currentTimeMillis) {
+        return userCourseDomainRepository.countUserCourseInCourseIdList(userId,courseIdList,currentTimeMillis);
     }
 }

@@ -6,13 +6,10 @@ import java.math.BigDecimal;
 import java.util.List;
 
 /**
- * @Author yaCoding
- * @create 2022-09-25 下午 3:58
+ * @author Jarno
  */
-//课程参数
 @Data
 public class CourseParam {
-
     private Long userId;
     private Long id;
     private String courseName;
@@ -28,7 +25,7 @@ public class CourseParam {
     private String subjectName;
     private String subjectGrade;
     private String subjectTerm;
-
+    //课程id
     private Long courseId;
     private String imageUrl;
 }

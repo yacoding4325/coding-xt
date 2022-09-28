@@ -6,11 +6,14 @@ import lombok.Data;
 
 import java.util.List;
 import java.util.Map;
-//主题模型视图
+
+/**
+ * @author Jarno
+ */
 @Data
 public class TopicModelView {
-
-    private Long id;
+    //前端的js 接收数值类型的时候 不能接收过长的数值 js 范围比long小，精度损失问题
+    private String id;
 
     private String topicTitle;
 
@@ -29,7 +32,6 @@ public class TopicModelView {
     private int fillBlankTopicChoice;
 
     private List<Map<String, ContentAndImage>> radioChoice;
-
     private List<Map<String,ContentAndImage>> mulChoice;
 
     private String answer;
@@ -41,6 +43,5 @@ public class TopicModelView {
     private String lastUpdateTime;
 
     private String userAnswer;
-
     private Integer pStatus;
 }

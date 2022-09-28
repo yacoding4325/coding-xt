@@ -39,11 +39,7 @@ import java.util.stream.Collectors;
 public class CourseDomain {
 
     private CourseDomainRepository courseDomainRepository;
-
     private CourseParam courseParam;
-
-    @Resource
-    private CourseSubjectMapper courseSubjectMapper;
 
     public CourseDomain(CourseDomainRepository courseDomainRepository, CourseParam courseParam) {
         this.courseDomainRepository = courseDomainRepository;
@@ -123,32 +119,29 @@ public class CourseDomain {
     }
 
     public CallResult<Object> subjectInfo() {
-        /**
-         * 1.根据课程id 查询 学科列表
-         * 2.根据学科 查询相应的单元
-         * 3.返回对应的模型数据即可
-         * 4.不做业务逻辑（如果此课程已经学习过程中，直接返回当初选择的课程）
-         */
         Long userId = UserThreadLocal.get();
-        Long courseId = this.courseParam.getCourseId();
-//        Course course = this.courseDomainRepository.findCourseById(courseId);
-//        if (course == null){
-//            return CallResult.fail(BusinessCodeEnum.TOPIC_PARAM_ERROR.getCode(),"参数错误");
-//        }
+        /**
+         * 1. 根据课程id 查询 学科列表
+         * 2. 根据学科 查询对应的单元
+         * 3. 返回对应的模型数据即可
+         * 4. 不做的业务逻辑（如果此课程的学科已经在学习中，返回已经当初选择的单元）
+         */
+        Long courseId = courseParam.getCourseId();
         List<SubjectModel> subjectModelList = this.courseDomainRepository.createSubjectDomain(null).findSubjectListByCourseId(courseId);
+
         List<SubjectViewModel> subjectViewModelList = new ArrayList<>();
-        for (SubjectModel subjectModel : subjectModelList){
-//            List<Integer> subjectUnitList = this.courseDomainRepository.createSubjectDomain(null).findSubjectUnit(subject.getId());
+        for (SubjectModel subjectModel : subjectModelList) {
+
             SubjectViewModel subjectViewModel = new SubjectViewModel();
             subjectViewModel.setId(subjectModel.getId());
-            subjectViewModel.setSubjectName(subjectModel.getSubjectName());
             subjectViewModel.setSubjectGrade(subjectModel.getSubjectGrade());
             subjectViewModel.setSubjectTerm(subjectModel.getSubjectTerm());
+            subjectViewModel.setSubjectName(subjectModel.getSubjectName());
             subjectViewModel.fillSubjectName();
-            List<Integer> subjectUnitList = this.courseDomainRepository.createSubjectDomain(null).findSubjectUnitBySubjectId(subjectModel.getId());
-            subjectViewModel.setSubjectUnitList(subjectUnitList);
-//            subjectViewModel.setSubjectUnitList(subjectUnitList);
-            subjectViewModelList.add(subjectViewModel);
+            List<Integer> subjectUnitLis
+                    = this.courseDomainRepository.createSubjectDomain(null).findSubjectUnitBySubjectId(subjectModel.getId());
+            subjectViewModel.setSubjectUnitList(subjectUnitLis);
+
             if (userId != null){
                 UserHistory userHistory = this.courseDomainRepository.createUserHistoryDomain(null).findUserHistory(userId, subjectModel.getId(), HistoryStatus.NO_FINISH.getCode());
                 if (userHistory != null) {
@@ -159,14 +152,16 @@ public class CourseDomain {
                     }
                 }
             }
+
+            subjectViewModelList.add(subjectViewModel);
         }
-        return CallResult.success(subjectModelList);
+        return CallResult.success(subjectViewModelList);
     }
 
     public CallResult<Object> checkSubjectInfoParam() {
         Long courseId = courseParam.getCourseId();
         Course course = this.courseDomainRepository.findCourseById(courseId);
-        if (course == null) {
+        if (course == null){
             return CallResult.fail(BusinessCodeEnum.TOPIC_PARAM_ERROR.getCode(),"参数错误");
         }
         return CallResult.success();
@@ -176,15 +171,9 @@ public class CourseDomain {
         return courseDomainRepository.findCourseIdListBySubjectId(subjectId);
     }
 
-
-    public List<Long> findCourseIdBySubject(Long subjectId) {
-        LambdaQueryWrapper<CourseSubject> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(CourseSubject::getSubjectId,subjectId);
-        queryWrapper.select(CourseSubject::getCourseId);
-        List<CourseSubject> courseSubjects = courseSubjectMapper.selectList(queryWrapper);
-        return courseSubjects.stream().map(CourseSubject::getCourseId).collect(Collectors.toList());
-//        return this.courseDomainRepository.findCourseIdBySubject(subjectId);
-    }
-
+//    public static void main(String[] args) {
+//        System.out.println(new DateTime(1633511129910L).toString("yyyy-MM-dd"));
+//        System.out.println(System.currentTimeMillis() + 300 * 24 * 60 * 60 * 1000);
+//    }
 
 }

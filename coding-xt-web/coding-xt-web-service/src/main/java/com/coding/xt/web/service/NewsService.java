@@ -12,9 +12,12 @@ import com.coding.xt.web.model.params.NewsParam;
 
 public interface NewsService {
 
+    /**
+     * 分页查询 新闻列表
+     * @param newsParam
+     * @return
+     */
     CallResult newsList(NewsParam newsParam);
-
-    CallResult newsDetailList(NewsParam newsParam);
 
     CallResult findNewsById(NewsParam newsParam);
 

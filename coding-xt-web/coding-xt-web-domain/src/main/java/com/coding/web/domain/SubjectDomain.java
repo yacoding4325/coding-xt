@@ -81,16 +81,13 @@ public class SubjectDomain {
 
     public List<Integer> findSubjectUnitBySubjectId(Long subjectId) {
         List<SubjectUnit> subjectUnitList = this.subjectDomainRepository.findUnitBySubjectId(subjectId);
-        return subjectUnitList.stream().map(SubjectUnit::getSubjectUnit).collect( Collectors.toList());
+        return subjectUnitList.stream().map(SubjectUnit::getSubjectUnit).collect(Collectors.toList());
     }
 
     public SubjectModel findSubject(Long subjectId) {
-        Subject subject = subjectDomainRepository.findById(subjectId);
-        return copy(subject);
+        Subject subject = this.subjectDomainRepository.findSubjectById(subjectId);
+        SubjectModel target = new SubjectModel();
+        BeanUtils.copyProperties(subject, target);
+        return target;
     }
-
-    private SubjectModel copy(Subject subject) {
-        return null;
-    }
-
 }

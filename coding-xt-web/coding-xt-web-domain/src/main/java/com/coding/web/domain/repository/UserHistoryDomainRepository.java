@@ -1,6 +1,7 @@
 package com.coding.web.domain.repository;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.coding.web.domain.UserHistoryDomain;
 import com.coding.xt.pojo.UserHistory;
@@ -31,29 +32,30 @@ public class UserHistoryDomainRepository {
         queryWrapper.eq(UserHistory::getSubjectId,subjectId);
         queryWrapper.eq(UserHistory::getHistoryStatus,historyStatus);
         queryWrapper.last("limit 1");
-        return userHistoryMapper.selectById(queryWrapper);
-    }
-
-    public UserHistory findUserHistoryById(Long userId, Long practiceId) {
-        LambdaQueryWrapper<UserHistory> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(UserHistory::getUserId,userId);
-        queryWrapper.eq(UserHistory::getId,practiceId);
         return userHistoryMapper.selectOne(queryWrapper);
     }
 
-    public void save(UserHistory userHistory) {
-        this.userHistoryMapper.insert(userHistory);
+    public UserHistory findUserHistoryById(Long id) {
+        return userHistoryMapper.selectById(id);
     }
 
-    public void updateUserHistoryErrorCount(Long userHistoryId) {
-
+    public void save(UserHistory userHistory) {
+        userHistoryMapper.insert(userHistory);
     }
 
     public void updateUserHistoryStatus(Long historyId, int historyStatus, long finishTime) {
-
+        UserHistory userHistory = new UserHistory();
+        userHistory.setId(historyId);
+        userHistory.setHistoryStatus(historyStatus);
+        userHistory.setFinishTime(finishTime);
+        userHistoryMapper.updateById(userHistory);
     }
 
-    public void updateUserHistoryProgress(Long historyId) {
-
+    public void updateUserHistoryProgress(Long userHistoryId) {
+        UpdateWrapper<UserHistory> update = Wrappers.update();
+        update.eq("id",userHistoryId);
+        update.set("progress","progress+1");
+        this.userHistoryMapper.update(null, update);
     }
+
 }

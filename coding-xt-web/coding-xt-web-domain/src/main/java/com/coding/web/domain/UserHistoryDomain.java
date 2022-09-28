@@ -16,8 +16,8 @@ import com.coding.xt.web.model.params.UserHistoryParam;
 public class UserHistoryDomain {
 
     private UserHistoryDomainRepository userHistoryDomainRepository;
+
     private UserHistoryParam userHistoryParam;
-    private UserHistoryMapper userHistoryMapper;
 
     public UserHistoryDomain(UserHistoryDomainRepository userHistoryDomainRepository, UserHistoryParam userHistoryParam) {
         this.userHistoryDomainRepository = userHistoryDomainRepository;
@@ -25,36 +25,22 @@ public class UserHistoryDomain {
     }
 
     public UserHistory findUserHistory(Long userId, Long subjectId, int historyStatus) {
-        return this.userHistoryDomainRepository.findUserHistory(userId,subjectId,historyStatus);
+        return userHistoryDomainRepository.findUserHistory(userId,subjectId,historyStatus);
     }
 
-    public UserHistory findUserHistoryById(Long userId, Long practiceId) {
-        return this.userHistoryDomainRepository.findUserHistoryById(userId,practiceId);
+    public UserHistory findUserHistoryById(Long id) {
+        return userHistoryDomainRepository.findUserHistoryById(id);
     }
 
     public void saveUserHistory(UserHistory userHistory) {
         userHistoryDomainRepository.save(userHistory);
     }
 
-    public void updateUserHistoryErrorCount(Long userHistoryId) {
-        UpdateWrapper<UserHistory> update = Wrappers.update();
-        update.eq("id",userHistoryId);
-        update.set("error_count","error_count+1");
-        this.userHistoryMapper.update(null, update);
-    }
-
     public void updateUserHistoryStatus(Long historyId, int historyStatus, long finishTime) {
-        LambdaUpdateWrapper<UserHistory> update = Wrappers.lambdaUpdate();
-        update.eq(UserHistory::getId,historyId);
-        update.set(UserHistory::getHistoryStatus,historyStatus);
-        update.set(UserHistory::getFinishTime,finishTime);
-        this.userHistoryMapper.update(null, update);
+        userHistoryDomainRepository.updateUserHistoryStatus(historyId,historyStatus,finishTime);
     }
 
-    public void updateUserHistoryProgress(Long historyId) {
-        UpdateWrapper<UserHistory> update = Wrappers.update();
-        update.eq("id",historyId);
-        update.set("progress","progress+1");
-        this.userHistoryMapper.update(null, update);
+    public void updateUserHistoryProgress(Long userHistoryId) {
+        userHistoryDomainRepository.updateUserHistoryProgress(userHistoryId);
     }
 }

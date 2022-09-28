@@ -1,4 +1,4 @@
-package com.coding.xt.web.dao;
+package com.coding.xt.web.dao.data;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
