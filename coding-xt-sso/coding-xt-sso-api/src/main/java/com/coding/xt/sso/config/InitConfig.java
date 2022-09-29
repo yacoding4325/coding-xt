@@ -1,4 +1,4 @@
-package com.coding.xt.sso.dubbo.config;
+package com.coding.xt.sso.config;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;

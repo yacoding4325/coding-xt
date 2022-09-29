@@ -1,4 +1,4 @@
-package com.coding.xt.sso.dubbo.config;
+package com.coding.xt.sso.config;
 
 import com.coding.xt.sso.domain.repository.TokenDomainRepository;
 import org.springframework.context.annotation.ComponentScan;
