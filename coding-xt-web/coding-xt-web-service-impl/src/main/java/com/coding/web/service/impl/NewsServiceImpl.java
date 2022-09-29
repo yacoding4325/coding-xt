@@ -37,16 +37,16 @@ public class NewsServiceImpl extends AbstractService implements NewsService {
         });
     }
 
-    @Override
-    public CallResult newsDetailList(NewsParam newsParam) {
-        NewsDomain newsDomain = this.newsDomainRepository.createDomain(newsParam);
-        return this.serviceTemplate.executeQuery(new AbstractTemplateAction<Object>() {
-            @Override
-            public CallResult<Object> doAction() {
-                return newsDomain.newsList();
-            }
-        });
-    }
+//    @Override
+//    public CallResult newsDetailList(NewsParam newsParam) {
+//        NewsDomain newsDomain = this.newsDomainRepository.createDomain(newsParam);
+//        return this.serviceTemplate.executeQuery(new AbstractTemplateAction<Object>() {
+//            @Override
+//            public CallResult<Object> doAction() {
+//                return newsDomain.newsList();
+//            }
+//        });
+//    }
 
     @Override
     public CallResult findNewsById(NewsParam newsParam) {
