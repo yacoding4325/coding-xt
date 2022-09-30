@@ -13,6 +13,7 @@
         <module name="coding-xt-sso-domain" />
         <module name="coding-xt-web-service-impl" />
         <module name="coding-xt-admin-service" />
+        <module name="coding-xt-log" />
         <module name="coding-xt-admin-domain" />
         <module name="coding-xt-admin-service-impl" />
         <module name="coding-xt-admin-dao" />
@@ -43,6 +44,7 @@
       <module name="coding-xt-admin-service-impl" options="-parameters" />
       <module name="coding-xt-common" options="-parameters" />
       <module name="coding-xt-common-pojo" options="-parameters" />
+      <module name="coding-xt-log" options="-parameters" />
       <module name="coding-xt-sso-api" options="-parameters" />
       <module name="coding-xt-sso-dao" options="-parameters" />
       <module name="coding-xt-sso-domain" options="-parameters" />
