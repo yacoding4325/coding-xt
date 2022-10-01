@@ -22,4 +22,12 @@ public interface CourseService {
      * @return
      */
     CallResult subjectInfo(CourseParam courseParam);
+
+    /**
+     * 课程详情就是根据课程id，将课程的信息展示出来，供用户查看
+     * @param courseParam
+     * @return
+     */
+    CallResult courseDetail(CourseParam courseParam);
+
 }

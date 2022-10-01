@@ -13,6 +13,7 @@ import com.coding.xt.pojo.CourseSubject;
 import com.coding.xt.pojo.UserCourse;
 import com.coding.xt.pojo.UserHistory;
 import com.coding.xt.web.dao.CourseSubjectMapper;
+import com.coding.xt.web.model.CourseDetailModel;
 import com.coding.xt.web.model.CourseViewModel;
 import com.coding.xt.web.model.SubjectModel;
 import com.coding.xt.web.model.SubjectViewModel;
@@ -20,6 +21,7 @@ import com.coding.xt.web.model.enums.HistoryStatus;
 import com.coding.xt.web.model.params.CourseParam;
 import com.coding.xt.web.model.params.SubjectParam;
 import com.coding.xt.web.model.params.UserCourseParam;
+import jdk.nashorn.internal.codegen.CompilerConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.omg.PortableInterceptor.INACTIVE;
@@ -170,6 +172,35 @@ public class CourseDomain {
     public List<Long> findCourseIdListBySubjectId(Long subjectId) {
         return courseDomainRepository.findCourseIdListBySubjectId(subjectId);
     }
+
+    public CallResult<Object> courseDetail() {
+        Long courseId = this.courseParam.getCourseId();
+        Course course = this.courseDomainRepository.findCourseById(courseId);
+        if (course == null){
+            return CallResult.fail(BusinessCodeEnum.CHECK_PARAM_NO_RESULT.getCode(),"课程不存在");
+        }
+        CourseDetailModel courseDetailModel = new CourseDetailModel();
+        courseDetailModel.setCourseId(courseId);
+        courseDetailModel.setCourseName(course.getCourseName());
+        courseDetailModel.setCourseTime(course.getOrderTime());
+        courseDetailModel.setPrice(course.getCourseZhePrice());
+        //根据课程id 查询课程关联的科目详情
+        List<SubjectModel> subjectModelList = this.courseDomainRepository.createSubjectDomain(null).findSubjectListByCourseId(courseId);
+        StringBuilder subjectStr = new StringBuilder();
+        for (SubjectModel subject : subjectModelList) {
+            subjectStr.append(subject.getSubjectName())
+                    .append(" ")
+                    .append(subject.getSubjectGrade())
+                    .append(" ")
+                    .append(subject.getSubjectTerm())
+                    .append(",");
+        }
+        String subjectInfo = subjectStr.toString().substring(0, subjectStr.toString().length() - 1);
+        courseDetailModel.setSubjectInfo(subjectInfo);
+
+        return CallResult.success(courseDetailModel);
+    }
+
 
 //    public static void main(String[] args) {
 //        System.out.println(new DateTime(1633511129910L).toString("yyyy-MM-dd"));

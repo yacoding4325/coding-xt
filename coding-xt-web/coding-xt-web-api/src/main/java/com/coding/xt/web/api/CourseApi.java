@@ -42,4 +42,9 @@ public class CourseApi {
         return courseService.subjectInfo(courseParam);
     }
 
+    @PostMapping(value = "courseDetail")
+    public CallResult courseDetail(@RequestBody CourseParam courseParam){
+        return courseService.courseDetail(courseParam);
+    }
+
 }
