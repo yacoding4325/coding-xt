@@ -27,7 +27,8 @@ public class CourseApi {
      */
     @PostMapping(value = "courseList")
     @NoAuth
-    @Cache(name = "web_courseList",time = 5*60*1000,hasUser = true)
+    //当做一个小作业 订单支付完成之后，应该发一个消息到队列，队列接收到之后 订单完成了，把课程列表的缓存 更新一下
+//    @Cache(name = "web_courseList",time = 5*60*1000,hasUser = true)
     public CallResult courseList(@RequestBody CourseParam courseParam){
         return courseService.courseList(courseParam);
     }
@@ -45,6 +46,11 @@ public class CourseApi {
     @PostMapping(value = "courseDetail")
     public CallResult courseDetail(@RequestBody CourseParam courseParam){
         return courseService.courseDetail(courseParam);
+    }
+
+    @PostMapping(value = "myCoupon")
+    public CallResult myCoupon(@RequestBody CourseParam courseParam){
+        return courseService.myCoupon(courseParam);
     }
 
 }

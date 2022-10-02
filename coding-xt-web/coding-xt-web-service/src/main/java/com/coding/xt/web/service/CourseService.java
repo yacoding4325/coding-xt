@@ -30,4 +30,11 @@ public interface CourseService {
      */
     CallResult courseDetail(CourseParam courseParam);
 
+    /**
+     * 查询用户可用的优惠券
+     * @param courseParam
+     * @return
+     */
+    CallResult myCoupon(CourseParam courseParam);
+
 }

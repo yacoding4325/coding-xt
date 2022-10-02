@@ -3,18 +3,12 @@ package com.coding.web.domain.repository;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.coding.web.domain.CourseDomain;
-import com.coding.web.domain.SubjectDomain;
-import com.coding.web.domain.UserCourseDomain;
-import com.coding.web.domain.UserHistoryDomain;
+import com.coding.web.domain.*;
 import com.coding.xt.pojo.Course;
 import com.coding.xt.pojo.CourseSubject;
 import com.coding.xt.web.dao.CourseMapper;
 import com.coding.xt.web.dao.CourseSubjectMapper;
-import com.coding.xt.web.model.params.CourseParam;
-import com.coding.xt.web.model.params.SubjectParam;
-import com.coding.xt.web.model.params.UserCourseParam;
-import com.coding.xt.web.model.params.UserHistoryParam;
+import com.coding.xt.web.model.params.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,6 +26,7 @@ public class CourseDomainRepository {
 
     @Resource
     private CourseMapper courseMapper;
+
     @Resource
     private CourseSubjectMapper courseSubjectMapper;
 
@@ -43,6 +38,9 @@ public class CourseDomainRepository {
 
     @Autowired
     private UserHistoryDomainRepository userHistoryDomainRepository;
+
+    @Autowired
+    private CouponDomainRepository couponDomainRepository;
 
     public CourseDomain createDomain(CourseParam courseParam){
         return new CourseDomain(this,courseParam);
@@ -86,6 +84,10 @@ public class CourseDomainRepository {
         queryWrapper.eq(CourseSubject::getSubjectId,subjectId);
         List<CourseSubject> courseSubjects = this.courseSubjectMapper.selectList(queryWrapper);
         return courseSubjects.stream().map(CourseSubject::getCourseId).collect(Collectors.toList());
+    }
+
+    public CouponDomain createUserCouponDomain(CouponParam couponParam) {
+        return this.couponDomainRepository.createDomain(couponParam);
     }
 
 }
