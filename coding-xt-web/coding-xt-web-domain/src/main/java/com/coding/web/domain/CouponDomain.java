@@ -39,4 +39,7 @@ public class CouponDomain {
         couponDomainRepository.updateCouponNoUseStatus(userId,couponId,frontStatusCode);
     }
 
+    public UserCoupon findUserCouponByUserId(Long userId, Long id) {
+        return couponDomainRepository.findUserCouponByUserId(userId,id);
+    }
 }
