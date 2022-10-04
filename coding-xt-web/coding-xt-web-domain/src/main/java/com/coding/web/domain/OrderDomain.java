@@ -8,7 +8,9 @@ import com.coding.xt.common.model.BusinessCodeEnum;
 import com.coding.xt.common.model.CallResult;
 import com.coding.xt.common.utils.CommonUtils;
 import com.coding.xt.pojo.*;
+import com.coding.xt.web.model.CourseViewModel;
 import com.coding.xt.web.model.OrderDisplayModel;
+import com.coding.xt.web.model.OrderViewModel;
 import com.coding.xt.web.model.SubjectModel;
 import com.coding.xt.web.model.enums.OrderStatus;
 import com.coding.xt.web.model.enums.PayStatus;
@@ -21,6 +23,7 @@ import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderRequest;
 import com.github.binarywang.wxpay.exception.WxPayException;
 import com.github.binarywang.wxpay.service.WxPayService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
@@ -276,5 +279,34 @@ public class OrderDomain {
     }
 
 
-
+    //查询订单
+    public CallResult<Object> findOrder() {
+        String orderId = this.orderParam.getOrderId();
+        if (StringUtils.isEmpty(orderId)){
+            return CallResult.fail(BusinessCodeEnum.ORDER_NOT_EXIST.getCode(),BusinessCodeEnum.ORDER_NOT_EXIST.getMsg());
+        }
+        Order order = this.orderDomainRepository.findOrderByOrderId(orderId);
+        if (order == null){
+            return CallResult.fail(BusinessCodeEnum.ORDER_NOT_EXIST.getCode(),BusinessCodeEnum.ORDER_NOT_EXIST.getMsg());
+        }
+        OrderViewModel orderViewModel = new OrderViewModel();
+        orderViewModel.setOrderId(order.getOrderId());
+        CourseViewModel courseViewModel = this.orderDomainRepository.createCourseDomain(null).findCourseViewModel(order.getCourseId());
+        orderViewModel.setCourse(courseViewModel);
+        orderViewModel.setOAmount(order.getOrderAmount());
+        orderViewModel.setOrderStatus(order.getOrderStatus());
+        orderViewModel.setPayStatus(order.getPayStatus());
+        orderViewModel.setPayType(order.getPayType());
+        orderViewModel.setCreateTime(new DateTime(order.getCreateTime()).toString("yyyy-MM-dd HH:mm:ss"));
+        orderViewModel.setExpireTime(new DateTime(order.getCreateTime() + order.getExpireTime()*24*60*60*1000).toString("yyyy-MM-dd HH:mm:ss"));
+        Long couponId = order.getCouponId();
+        if (couponId <= 0){
+            orderViewModel.setCouponAmount(new BigDecimal(0));
+        }else{
+            Coupon coupon = this.orderDomainRepository.createCouponDomain(null).findCouponById(couponId);
+            BigDecimal price = coupon.getPrice();
+            orderViewModel.setCouponAmount(price);
+        }
+        return CallResult.success(orderViewModel);
+    }
 }

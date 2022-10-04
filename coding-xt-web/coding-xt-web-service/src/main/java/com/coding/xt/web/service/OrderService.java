@@ -30,4 +30,12 @@ public interface OrderService {
      * @return
      */
     CallResult notifyOrder(String xmlData);
+
+    /**
+     * 查询订单
+     * @param orderParam
+     * @return
+     */
+    CallResult findOrder(OrderParam orderParam);
+
 }

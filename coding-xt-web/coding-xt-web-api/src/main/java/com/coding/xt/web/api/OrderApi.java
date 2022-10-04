@@ -43,4 +43,10 @@ public class OrderApi {
         }
         return WxPayNotifyResponse.fail("失败");
     }
+
+    //制作订单 -- 查找订单
+    @PostMapping("findOrder")
+    public CallResult findOrder(@RequestBody OrderParam orderParam){
+        return orderService.findOrder(orderParam);
+    }
 }
