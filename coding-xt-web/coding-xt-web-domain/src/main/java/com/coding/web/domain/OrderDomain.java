@@ -1,11 +1,13 @@
 package com.coding.web.domain;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.coding.web.domain.pay.WxPayDomain;
 import com.coding.web.domain.repository.OrderDomainRepository;
 import com.coding.xt.common.login.UserThreadLocal;
 import com.coding.xt.common.model.BusinessCodeEnum;
 import com.coding.xt.common.model.CallResult;
+import com.coding.xt.common.model.ListPageModel;
 import com.coding.xt.common.utils.CommonUtils;
 import com.coding.xt.pojo.*;
 import com.coding.xt.web.model.CourseViewModel;
@@ -27,6 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -308,5 +311,41 @@ public class OrderDomain {
             orderViewModel.setCouponAmount(price);
         }
         return CallResult.success(orderViewModel);
+    }
+
+    public CallResult<Object> orderList() {
+        int page = this.orderParam.getPage();
+        int pageSize = this.orderParam.getPageSize();
+        Long userId = UserThreadLocal.get();
+        Page<Order> orderPage = this.orderDomainRepository.orderList(userId, OrderStatus.CANCEL.getCode(),page,pageSize);
+        List<OrderViewModel> orderViewModelList = new ArrayList<>();
+        for (Order order : orderPage.getRecords()){
+            OrderViewModel orderViewModel = new OrderViewModel();
+            orderViewModel.setOrderId(order.getOrderId());
+            CourseViewModel courseViewModel = this.orderDomainRepository.createCourseDomain(null).findCourseViewModel(order.getCourseId());
+            orderViewModel.setCourse(courseViewModel);
+            orderViewModel.setOAmount(order.getOrderAmount());
+            orderViewModel.setOrderStatus(order.getOrderStatus());
+            orderViewModel.setPayStatus(order.getPayStatus());
+            orderViewModel.setPayType(order.getPayType());
+            orderViewModel.setCreateTime(new DateTime(order.getCreateTime()).toString("yyyy-MM-dd HH:mm:ss"));
+            orderViewModel.setExpireTime(new DateTime(order.getCreateTime() + order.getExpireTime()*24*60*60*1000).toString("yyyy-MM-dd HH:mm:ss"));
+            Long couponId = order.getCouponId();
+            if (couponId <= 0){
+                orderViewModel.setCouponAmount(new BigDecimal(0));
+            }else{
+                Coupon coupon = this.orderDomainRepository.createCouponDomain(null).findCouponById(couponId);
+                BigDecimal price = coupon.getPrice();
+                orderViewModel.setCouponAmount(price);
+            }
+            orderViewModelList.add(orderViewModel);
+        }
+        ListPageModel listPageModel = new ListPageModel();
+        int total = (int) orderPage.getTotal();
+        listPageModel.setSize(total);
+        listPageModel.setPageCount(orderPage.getPages());
+        listPageModel.setPage(page);
+        listPageModel.setList(orderViewModelList);
+        return CallResult.success(listPageModel);
     }
 }

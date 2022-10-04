@@ -38,4 +38,10 @@ public interface OrderService {
      */
     CallResult findOrder(OrderParam orderParam);
 
+    /**
+     * 订单列表 --查询列表
+     * @param orderParam
+     * @return
+     */
+    CallResult orderList(OrderParam orderParam);
 }

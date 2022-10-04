@@ -49,4 +49,11 @@ public class OrderApi {
     public CallResult findOrder(@RequestBody OrderParam orderParam){
         return orderService.findOrder(orderParam);
     }
+
+    //订单列表
+    @PostMapping(value = "orderList")
+    public CallResult orderList(@RequestBody OrderParam orderParam){
+        return orderService.orderList(orderParam);
+    }
+
 }
