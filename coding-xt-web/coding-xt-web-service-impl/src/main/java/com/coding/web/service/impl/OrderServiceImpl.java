@@ -29,4 +29,15 @@ public class OrderServiceImpl extends AbstractService implements OrderService {
             }
         });
     }
+
+    @Override
+    public CallResult wxPay(OrderParam orderParam) {
+        OrderDomain orderDomain = this.orderDomainRepository.createDomain(orderParam);
+        return this.serviceTemplate.execute(new AbstractTemplateAction<Object>() {
+            @Override
+            public CallResult<Object> doAction() {
+                return orderDomain.wxPay();
+            }
+        });
+    }
 }

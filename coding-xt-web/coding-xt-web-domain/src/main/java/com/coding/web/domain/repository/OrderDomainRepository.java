@@ -8,6 +8,7 @@ import com.coding.web.domain.CourseDomain;
 import com.coding.web.domain.OrderDomain;
 import com.coding.web.domain.SubjectDomain;
 import com.coding.web.domain.mq.MqService;
+import com.coding.xt.common.wx.config.WxPayConfiguration;
 import com.coding.xt.pojo.Order;
 import com.coding.xt.web.dao.OrderMapper;
 import com.coding.xt.web.model.params.CouponParam;
@@ -18,6 +19,7 @@ import com.sun.xml.internal.bind.v2.schemagen.episode.Klass;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import sun.security.krb5.internal.tools.Kinit;
 
 import javax.annotation.Resource;
 
@@ -42,6 +44,10 @@ public class OrderDomainRepository {
 
     @Autowired
     public MqService mqService;
+
+    @Autowired
+    public WxPayConfiguration wxPayConfiguration;
+
 
     public OrderDomain createDomain(OrderParam orderParam) {
         return new OrderDomain(this,orderParam);
@@ -80,6 +86,14 @@ public class OrderDomainRepository {
         updateWrapper.eq(Order::getId,order.getId());
         updateWrapper.eq(Order::getOrderStatus,initCode);
         updateWrapper.set(Order::getOrderStatus,order.getOrderStatus());
+        this.orderMapper.update(null, updateWrapper);
+    }
+
+    //更新订单的支付id
+    public void updatePayOrderId(Order order) {
+        LambdaUpdateWrapper<Order> updateWrapper = Wrappers.lambdaUpdate();
+        updateWrapper.eq(Order::getId,order.getId());
+        updateWrapper.set(Order::getPayOrderId,order.getPayOrderId());
         this.orderMapper.update(null, updateWrapper);
     }
 

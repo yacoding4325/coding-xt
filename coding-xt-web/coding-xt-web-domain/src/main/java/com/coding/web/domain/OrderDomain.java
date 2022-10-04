@@ -1,5 +1,6 @@
 package com.coding.web.domain;
 
+import com.coding.web.domain.pay.WxPayDomain;
 import com.coding.web.domain.repository.OrderDomainRepository;
 import com.coding.xt.common.login.UserThreadLocal;
 import com.coding.xt.common.model.BusinessCodeEnum;
@@ -15,6 +16,13 @@ import com.coding.xt.web.model.enums.OrderStatus;
 import com.coding.xt.web.model.enums.PayStatus;
 import com.coding.xt.web.model.enums.PayType;
 import com.coding.xt.web.model.params.OrderParam;
+import com.github.binarywang.wxpay.bean.order.WxPayNativeOrderResult;
+import com.github.binarywang.wxpay.bean.request.BaseWxPayRequest;
+import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderRequest;
+import com.github.binarywang.wxpay.exception.WxPayException;
+import com.github.binarywang.wxpay.service.WxPayService;
+import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -25,7 +33,7 @@ import java.util.Map;
  * @Author yaCoding
  * @create 2022-10-03 上午 9:49
  */
-
+@Slf4j
 public class OrderDomain {
 
     private OrderDomainRepository orderDomainRepository;
@@ -133,6 +141,69 @@ public class OrderDomain {
         userCoupon.setStatus(4);
         couponDomain.updateCouponStatus(userCoupon);
         return coupon.getPrice();
+    }
+
+    /**
+     * /**
+     * * 1. 获取到登录用户
+     * * 2. 根据订单号 查询订单 检查订单状态和支付状态
+     * * 3. 根据课程id 查询课程 确保课程的状态正常
+     * * 4. 组装微信支付需要的参数，发起微信的调用，微信会给我们返回对应的二维码链接
+     * * 5. 更改订单状态 为 已提交
+     * @return
+     */
+    public CallResult<Object> wxPay() {
+        Long userId = UserThreadLocal.get();
+        String orderId = this.orderParam.getOrderId();
+        Integer payType = this.orderParam.getPayType();
+
+        Order order = this.orderDomainRepository.findOrderByOrderId(orderId);
+        if (order == null) {
+            return CallResult.fail(BusinessCodeEnum.ORDER_NOT_EXIST.getCode(), "订单不存在");
+        }
+        Integer orderStatus = order.getOrderStatus();
+        if (orderStatus != OrderStatus.INIT.getCode()) {
+            return CallResult.fail(BusinessCodeEnum.CHECK_PARAM_NO_RESULT.getCode(), "订单已被更改");
+        }
+        Integer payStatus = order.getPayStatus();
+        if (payStatus != PayStatus.NO_PAY.getCode()) {
+            return CallResult.fail(BusinessCodeEnum.CHECK_PARAM_NO_RESULT.getCode(), "订单已被支付");
+        }
+        Long courseId = order.getCourseId();
+        Course course = this.orderDomainRepository.createCourseDomain(null).findCourseById(courseId);
+        if (course == null) {
+            return CallResult.fail(BusinessCodeEnum.COURSE_NOT_EXIST.getCode(), "课程状态不可用");
+        }
+        String payOrderId = System.currentTimeMillis() + String.valueOf(CommonUtils.random5Num()) + userId % 10000;
+        order.setPayOrderId(payOrderId);
+        order.setPayType(payType);
+        //更新订单的支付id
+        this.orderDomainRepository.updatePayOrderId(order);
+        WxPayDomain wxPayDomain = new WxPayDomain(this.orderDomainRepository.wxPayConfiguration);
+        WxPayService wxPayService = wxPayDomain.getWxPayService();
+        WxPayUnifiedOrderRequest orderRequest = new WxPayUnifiedOrderRequest();
+        orderRequest.setNotifyUrl(this.orderDomainRepository.wxPayConfiguration.wxNotifyUrl);
+        orderRequest.setBody(course.getCourseName());
+        orderRequest.setOutTradeNo(payOrderId);
+        orderRequest.setProductId(String.valueOf(courseId));
+        orderRequest.setTotalFee(BaseWxPayRequest.yuanToFen(String.valueOf(order.getOrderAmount().doubleValue())));//元转成分
+        orderRequest.setSpbillCreateIp("182.92.102.161");
+        orderRequest.setTradeType("NATIVE");
+        orderRequest.setTimeStart(new DateTime(order.getCreateTime()).toString("yyyyMMddHHmmss"));
+
+        try {
+            WxPayNativeOrderResult orderResult = wxPayService.createOrder(orderRequest);
+
+            String codeUrl = orderResult.getCodeUrl();
+            //更新订单状态
+            order.setOrderStatus(OrderStatus.COMMIT.getCode());
+            this.orderDomainRepository.updateOrderStatus(OrderStatus.INIT.getCode(), order);
+            return CallResult.success(codeUrl);
+        } catch (WxPayException e) {
+            e.printStackTrace();
+            log.error("wxpay error:", e);
+            return CallResult.fail(BusinessCodeEnum.PAY_ORDER_CREATE_FAIL.getCode(), "订单支付创建失败");
+        }
     }
 
 }

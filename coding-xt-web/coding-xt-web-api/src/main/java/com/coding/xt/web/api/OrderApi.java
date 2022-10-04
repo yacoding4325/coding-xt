@@ -26,4 +26,9 @@ public class OrderApi {
         return orderService.submitOrder(orderParam);
     }
 
+    //微信支付
+    @PostMapping("wxPay")
+    public CallResult wxPay(@RequestBody OrderParam orderParam){
+        return orderService.wxPay(orderParam);
+    }
 }

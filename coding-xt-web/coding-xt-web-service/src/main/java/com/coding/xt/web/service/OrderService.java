@@ -17,4 +17,11 @@ public interface OrderService {
      */
     CallResult submitOrder(OrderParam orderParam);
 
+    /**
+     * 微信支付 --根据订单id和类型 审生成支付二维码
+     * @param orderParam
+     * @return
+     */
+    CallResult wxPay(OrderParam orderParam);
+
 }

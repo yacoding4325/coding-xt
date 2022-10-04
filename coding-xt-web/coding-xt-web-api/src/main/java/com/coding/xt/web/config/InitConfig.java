@@ -2,6 +2,7 @@ package com.coding.xt.web.config;
 
 import com.coding.xt.common.cache.EnableCache;
 import com.coding.xt.common.service.EnableService;
+import com.coding.xt.common.wx.config.EnableWxPay;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
@@ -19,5 +20,6 @@ import org.springframework.context.annotation.Configuration;
 //@ComponentScan({"com.coding.xt.common.cache","com.coding.xt.common.service"})
 @EnableCache
 @EnableService
+@EnableWxPay
 public class InitConfig {
 }
