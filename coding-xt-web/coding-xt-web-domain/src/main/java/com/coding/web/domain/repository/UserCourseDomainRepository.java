@@ -1,6 +1,8 @@
 package com.coding.web.domain.repository;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.coding.web.domain.UserCourseDomain;
 import com.coding.xt.pojo.UserCourse;
 import com.coding.xt.web.dao.UserCourseMapper;
@@ -32,6 +34,14 @@ public class UserCourseDomainRepository {
         return userCourseMapper.selectOne(queryWrapper);
     }
 
+    public UserCourse findUserCourse(Long userId, Long courseId) {
+        LambdaQueryWrapper<UserCourse> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserCourse::getCourseId,courseId);
+        queryWrapper.eq(UserCourse::getUserId,userId);
+        queryWrapper.last("limit 1");
+        return userCourseMapper.selectOne(queryWrapper);
+    }
+
     public long countUserCourseByCourseId(Long courseId) {
         LambdaQueryWrapper<UserCourse> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(UserCourse::getCourseId,courseId);
@@ -44,5 +54,17 @@ public class UserCourseDomainRepository {
         queryWrapper.in(UserCourse::getCourseId,courseIdList);
         queryWrapper.ge(UserCourse::getExpireTime,currentTimeMillis);
         return userCourseMapper.selectCount(queryWrapper);
+    }
+
+
+    public void saveUserCourse(UserCourse course) {
+        userCourseMapper.insert(course);
+    }
+
+    public void updateUserCourse(UserCourse course) {
+        LambdaUpdateWrapper<UserCourse> updateWrapper = Wrappers.lambdaUpdate();
+        updateWrapper.eq(UserCourse::getId,course.getId());
+        updateWrapper.set(UserCourse::getExpireTime,course.getExpireTime());
+        userCourseMapper.update(null, updateWrapper);
     }
 }

@@ -54,6 +54,7 @@ public class CouponDomainRepository {
         return userCoupon;
     }
 
+    //更新优惠券状态
     public void updateCouponStatus(UserCoupon userCoupon) {
         LambdaUpdateWrapper<UserCoupon> updateWrapper = Wrappers.lambdaUpdate();
         updateWrapper.eq(UserCoupon::getId,userCoupon.getId());

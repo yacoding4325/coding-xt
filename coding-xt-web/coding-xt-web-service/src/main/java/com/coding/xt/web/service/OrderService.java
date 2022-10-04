@@ -24,4 +24,10 @@ public interface OrderService {
      */
     CallResult wxPay(OrderParam orderParam);
 
+    /**
+     * 支付回调--通知单  处理订单成功的相关操作
+     * @param xmlData
+     * @return
+     */
+    CallResult notifyOrder(String xmlData);
 }

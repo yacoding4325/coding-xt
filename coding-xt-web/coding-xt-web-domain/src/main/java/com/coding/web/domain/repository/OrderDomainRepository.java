@@ -3,18 +3,14 @@ package com.coding.web.domain.repository;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.coding.web.domain.CouponDomain;
-import com.coding.web.domain.CourseDomain;
-import com.coding.web.domain.OrderDomain;
-import com.coding.web.domain.SubjectDomain;
+import com.coding.web.domain.*;
 import com.coding.web.domain.mq.MqService;
 import com.coding.xt.common.wx.config.WxPayConfiguration;
 import com.coding.xt.pojo.Order;
+import com.coding.xt.pojo.OrderTrade;
 import com.coding.xt.web.dao.OrderMapper;
-import com.coding.xt.web.model.params.CouponParam;
-import com.coding.xt.web.model.params.CourseParam;
-import com.coding.xt.web.model.params.OrderParam;
-import com.coding.xt.web.model.params.SubjectParam;
+import com.coding.xt.web.dao.OrderTradeMapper;
+import com.coding.xt.web.model.params.*;
 import com.sun.xml.internal.bind.v2.schemagen.episode.Klass;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +43,12 @@ public class OrderDomainRepository {
 
     @Autowired
     public WxPayConfiguration wxPayConfiguration;
+
+    @Resource
+    private OrderTradeMapper orderTradeMapper;
+
+    @Autowired
+    private UserCourseDomainRepository userCourseDomainRepository;
 
 
     public OrderDomain createDomain(OrderParam orderParam) {
@@ -95,6 +97,51 @@ public class OrderDomainRepository {
         updateWrapper.eq(Order::getId,order.getId());
         updateWrapper.set(Order::getPayOrderId,order.getPayOrderId());
         this.orderMapper.update(null, updateWrapper);
+    }
+
+    //更新订单状态和付款状态
+    public void updateOrderStatusAndPayStatus(Order order) {
+        LambdaUpdateWrapper<Order> updateWrapper = Wrappers.lambdaUpdate();
+        updateWrapper.eq(Order::getId,order.getId());
+        updateWrapper.set(Order::getOrderStatus,order.getOrderStatus());
+        updateWrapper.set(Order::getPayStatus,order.getPayStatus());
+        updateWrapper.set(Order::getPayTime,order.getPayTime());
+        this.orderMapper.update(null, updateWrapper);
+    }
+
+
+
+    //查找订单交易
+    public OrderTrade findOrderTrade(String orderId) {
+        LambdaQueryWrapper<OrderTrade> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(OrderTrade::getOrderId,orderId);
+        queryWrapper.last("limit 1");
+        return orderTradeMapper.selectOne(queryWrapper);
+    }
+
+    //存储订单交易
+    public void saveOrderTrade(OrderTrade orderTrade) {
+        orderTradeMapper.insert(orderTrade);
+    }
+
+    //更新订单交易
+    public void updateOrderTrade(OrderTrade orderTrade) {
+        LambdaUpdateWrapper<OrderTrade> updateWrapper = Wrappers.lambdaUpdate();
+        updateWrapper.eq(OrderTrade::getId,orderTrade.getId());
+        updateWrapper.set(OrderTrade::getPayInfo,orderTrade.getPayInfo());
+        this.orderTradeMapper.update(null, updateWrapper);
+    }
+
+    //按付款订单ID查找订单
+    public Order findOrderByPayOrderId(String orderId) {
+        LambdaQueryWrapper<Order> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(Order::getPayOrderId,orderId);
+        return this.orderMapper.selectOne(queryWrapper);
+    }
+
+    //创建资源域
+    public UserCourseDomain createUserCourseDomain(UserCourseParam userCourseParam) {
+        return userCourseDomainRepository.createDomain(userCourseParam);
     }
 
 }

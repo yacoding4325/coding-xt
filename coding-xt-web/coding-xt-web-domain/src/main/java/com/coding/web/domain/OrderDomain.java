@@ -1,21 +1,20 @@
 package com.coding.web.domain;
 
+import com.alibaba.fastjson.JSON;
 import com.coding.web.domain.pay.WxPayDomain;
 import com.coding.web.domain.repository.OrderDomainRepository;
 import com.coding.xt.common.login.UserThreadLocal;
 import com.coding.xt.common.model.BusinessCodeEnum;
 import com.coding.xt.common.model.CallResult;
 import com.coding.xt.common.utils.CommonUtils;
-import com.coding.xt.pojo.Coupon;
-import com.coding.xt.pojo.Course;
-import com.coding.xt.pojo.Order;
-import com.coding.xt.pojo.UserCoupon;
+import com.coding.xt.pojo.*;
 import com.coding.xt.web.model.OrderDisplayModel;
 import com.coding.xt.web.model.SubjectModel;
 import com.coding.xt.web.model.enums.OrderStatus;
 import com.coding.xt.web.model.enums.PayStatus;
 import com.coding.xt.web.model.enums.PayType;
 import com.coding.xt.web.model.params.OrderParam;
+import com.github.binarywang.wxpay.bean.notify.WxPayOrderNotifyResult;
 import com.github.binarywang.wxpay.bean.order.WxPayNativeOrderResult;
 import com.github.binarywang.wxpay.bean.request.BaseWxPayRequest;
 import com.github.binarywang.wxpay.bean.request.WxPayUnifiedOrderRequest;
@@ -205,5 +204,77 @@ public class OrderDomain {
             return CallResult.fail(BusinessCodeEnum.PAY_ORDER_CREATE_FAIL.getCode(), "订单支付创建失败");
         }
     }
+
+    public CallResult<Object> notifyOrder(String xmlData) {
+        /**
+         * 1. 解析微信参数 payOrderId
+         * 2. 根据payOrderId进行订单查询
+         * 3. 如果订单存在 订单更改为已支付
+         * 4. 处理了交易的流水信息 做了一个保存
+         * 5. 处理用户的课程，要给用户将购买的课程标识为已购买
+         * 6. 优惠券 标识为已使用
+         */
+        WxPayDomain wxPayDomain = new WxPayDomain(this.orderDomainRepository.wxPayConfiguration);
+        try {
+            WxPayOrderNotifyResult notifyResult = wxPayDomain.getWxPayService().parseOrderNotifyResult(xmlData);
+            String returnCode = notifyResult.getReturnCode();
+            if ("SUCCESS".equals(returnCode)){
+                //支付成功了
+                //1. 交易id 传递到微信的支付订单号 payOrderId
+                String payOrderId = notifyResult.getOutTradeNo();
+                //微信方交易订单号
+                String transactionId = notifyResult.getTransactionId();
+                Order order = this.orderDomainRepository.findOrderByPayOrderId(payOrderId);
+                if (order == null){
+                    return CallResult.fail(BusinessCodeEnum.ORDER_NOT_EXIST.getCode(),"订单不存在");
+                }
+                if (order.getOrderStatus() == OrderStatus.PAYED.getCode()
+                        && order.getPayStatus() == PayStatus.PAYED.getCode()){
+                    //代表订单已经处理过了，无需进行重复处理
+                    return CallResult.success();
+                }
+                order.setOrderStatus(OrderStatus.PAYED.getCode());
+                order.setPayStatus(PayStatus.PAYED.getCode());
+//              String timeEnd = notifyResult.getTimeEnd(); 支付完成时间
+                order.setPayTime(System.currentTimeMillis());
+                this.orderDomainRepository.updateOrderStatusAndPayStatus(order);
+                //订单
+                //添加支付信息
+                OrderTrade orderTrade = this.orderDomainRepository.findOrderTrade(order.getOrderId());
+                if (orderTrade == null){
+                    //第一次添加 流水
+                    orderTrade = new OrderTrade();
+                    orderTrade.setPayInfo(JSON.toJSONString(notifyResult));
+                    orderTrade.setOrderId(order.getOrderId());
+                    orderTrade.setUserId(order.getUserId());
+                    orderTrade.setPayType(order.getPayType());
+                    orderTrade.setTransactionId(transactionId);
+                    this.orderDomainRepository.saveOrderTrade(orderTrade);
+                }else{
+                    //以前添加过 更新即可 理论上 收到的流水应该是一致的
+                    orderTrade.setPayInfo(JSON.toJSONString(notifyResult));
+                    this.orderDomainRepository.updateOrderTrade(orderTrade);
+                }
+                //添加课程
+                this.orderDomainRepository.createUserCourseDomain(null).saveUserCourse(order);
+                Long couponId = order.getCouponId();
+                if (couponId > 0) {
+                    UserCoupon userCoupon = this.orderDomainRepository.createCouponDomain(null).findUserCouponByUserId(order.getUserId(), couponId);
+                    if (userCoupon != null) {
+                        userCoupon.setStatus(1);
+                        this.orderDomainRepository.createCouponDomain(null).updateCouponStatus(userCoupon);
+                    }
+                }
+                return CallResult.success();
+            }
+        } catch (WxPayException e) {
+            e.printStackTrace();
+            return CallResult.fail(BusinessCodeEnum.PAY_ORDER_CREATE_FAIL.getCode(),"微信支付信息处理失败");
+        }
+
+        return CallResult.fail();
+    }
+
+
 
 }
