@@ -1,8 +1,10 @@
 package com.coding.xt.sso.domain;
 
 import com.coding.xt.common.constants.RedisKey;
+import com.coding.xt.common.enums.InviteType;
 import com.coding.xt.common.model.BusinessCodeEnum;
 import com.coding.xt.common.model.CallResult;
+import com.coding.xt.common.utils.AESUtils;
 import com.coding.xt.common.utils.JwtUtil;
 import com.coding.xt.sso.dao.data.User;
 import com.coding.xt.sso.domain.repository.LoginDomainRepository;
@@ -13,7 +15,12 @@ import me.chanjar.weixin.mp.bean.result.WxMpOAuth2AccessToken;
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -97,6 +104,9 @@ public class LoginDomain {
                 user.setSchool("");
                 this.loginDomainRepository.createUserDomain(new UserParam()).saveUser(user);
                 isNew = true;
+                //新用户 需要判断是否有邀请信息
+                fillInvite(user);
+
             }
 
             //5. 使用jwt技术，生成token，需要把token存储起来
@@ -127,6 +137,29 @@ public class LoginDomain {
         }catch (Exception e){
             e.printStackTrace();
             return CallResult.fail(BusinessCodeEnum.LOGIN_WX_NOT_USER_INFO.getCode(),"授权问题,无法获取用户信息");
+        }
+    }
+
+    /**
+     * 邀请信息
+     * @param user
+     */
+    private void fillInvite(User user) {
+        HttpServletRequest request = this.loginParam.getRequest();
+        Cookie[] cookies = request.getCookies();
+        if(cookies == null){
+            return;
+        }
+        List<Map<String,String>> billTypeList = new ArrayList<>();
+        for (Cookie cookie : cookies) {
+            String name = cookie.getName();
+            String[] inviteCookie = name.split("_i_ga_b_");
+            if (inviteCookie.length == 2){
+                Map<String,String> map = new HashMap<>();
+                map.put("billType",inviteCookie[1]);
+                map.put("userId",cookie.getValue());
+                billTypeList.add(map);
+            }
         }
     }
 

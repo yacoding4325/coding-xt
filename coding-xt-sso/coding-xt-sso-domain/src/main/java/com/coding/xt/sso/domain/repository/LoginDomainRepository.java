@@ -2,8 +2,10 @@ package com.coding.xt.sso.domain.repository;
 
 import com.coding.xt.common.constants.RedisKey;
 import com.coding.xt.common.wx.config.WxOpenConfig;
+import com.coding.xt.sso.domain.InviteDomain;
 import com.coding.xt.sso.domain.LoginDomain;
 import com.coding.xt.sso.domain.UserDomain;
+import com.coding.xt.sso.model.params.InviteParam;
 import com.coding.xt.sso.model.params.LoginParam;
 import com.coding.xt.sso.model.params.UserParam;
 import me.chanjar.weixin.common.api.WxConsts;
@@ -68,6 +70,14 @@ public class LoginDomainRepository {
 
     public UserDomain createUserDomain(UserParam userParam) {
         return userDomainRepository.createDomain(userParam);
+    }
+
+    @Autowired
+    private InviteDomainRepository inviteDomainRepository;
+
+    public InviteDomain createInviteDomain(InviteParam inviteParam) {
+
+        return inviteDomainRepository.createDomain(inviteParam);
     }
 
 
