@@ -21,6 +21,12 @@
             <artifactId>mybatis-plus-annotation</artifactId>
             <scope>compile</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.xiaoleilu</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>3.0.9</version>
+        </dependency>
     </dependencies>
 
 </project>
