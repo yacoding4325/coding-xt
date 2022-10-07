@@ -24,11 +24,20 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
         http.authorizeRequests()
                 .antMatchers("/login.html").permitAll()
                 .antMatchers("/css/**").permitAll()
                 .antMatchers("/js/**").permitAll()
                 .antMatchers("/plugins/**").permitAll()
+                //代表符合一下接口路径规则的，进行权限校验
+                .antMatchers(
+                        "/course/**",
+                        "/news/**",
+                        "/subject/**",
+                        "/topic/**",
+                        "/order/**",
+                        "/user/menu/userMenuList").access("@authService.auth(request,authentication)")
                 .anyRequest().authenticated()
                 .and().headers().frameOptions().disable()
                 .and()
@@ -36,8 +45,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .defaultSuccessUrl("/pages/main.html")
                 .permitAll()
                 .and().logout()
-                .and().csrf().disable();
-        super.configure(http);
+                .and().csrf().disable()
+        ;
+//        super.configure(http);
     }
 
     @Override

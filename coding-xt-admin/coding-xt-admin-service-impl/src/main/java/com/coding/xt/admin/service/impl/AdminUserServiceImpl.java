@@ -5,6 +5,8 @@ import com.coding.xt.admin.domain.repository.AdminUserDomainRepository;
 import com.coding.xt.admin.model.AdminUserModel;
 import com.coding.xt.admin.params.AdminUserParam;
 import com.coding.xt.admin.service.AdminUserService;
+import com.coding.xt.common.model.CallResult;
+import com.coding.xt.common.service.AbstractTemplateAction;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -24,4 +26,28 @@ public class AdminUserServiceImpl extends AbstractService implements AdminUserSe
         AdminUserDomain adminUserDomain  = adminUserDomainRepository.createDomain(adminUserParam);
         return adminUserDomain.findUserByUsername();
     }
+
+    //身份验证
+    @Override
+    public boolean auth(String requestURI, Long userId) {
+        AdminUserDomain adminUserDomain  = adminUserDomainRepository.createDomain(new AdminUserParam());
+        return this.serviceTemplate.executeQuery(new AbstractTemplateAction<Boolean>() {
+            @Override
+            public CallResult<Boolean> doAction() {
+                return adminUserDomain.auth(requestURI,userId);
+            }
+        }).getResult();
+    }
+
+    @Override
+    public CallResult findRolePage(AdminUserParam adminUserParam) {
+        AdminUserDomain adminUserDomain  = adminUserDomainRepository.createDomain(adminUserParam);
+        return this.serviceTemplate.executeQuery(new AbstractTemplateAction<Object>() {
+            @Override
+            public CallResult<Object> doAction() {
+                return adminUserDomain.findRolePage();
+            }
+        });
+    }
+
 }
