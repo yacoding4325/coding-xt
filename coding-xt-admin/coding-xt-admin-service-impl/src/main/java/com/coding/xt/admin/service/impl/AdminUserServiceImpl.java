@@ -148,4 +148,60 @@ public class AdminUserServiceImpl extends AbstractService implements AdminUserSe
         });
     }
 
+    @Override
+    public CallResult findPage(AdminUserParam adminUserParam) {
+        AdminUserDomain adminUserDomain = this.adminUserDomainRepository.createDomain(adminUserParam);
+        return this.serviceTemplate.executeQuery(new AbstractTemplateAction<Object>() {
+            @Override
+            public CallResult<Object> doAction() {
+                return adminUserDomain.findPage();
+            }
+        });
+    }
+
+    @Override
+    public CallResult roleAll() {
+        AdminUserDomain adminUserDomain = this.adminUserDomainRepository.createDomain(null);
+        return this.serviceTemplate.executeQuery(new AbstractTemplateAction<Object>() {
+            @Override
+            public CallResult<Object> doAction() {
+                return adminUserDomain.roleAll();
+            }
+        });
+    }
+
+    @Override
+    @Transactional
+    public CallResult addUser(AdminUserParam adminUserParam) {
+        AdminUserDomain adminUserDomain = this.adminUserDomainRepository.createDomain(adminUserParam);
+        return this.serviceTemplate.execute(new AbstractTemplateAction<Object>() {
+            @Override
+            public CallResult<Object> doAction() {
+                return adminUserDomain.addUser();
+            }
+        });
+    }
+
+    @Override
+    public CallResult findUserById(AdminUserParam adminUserParam) {
+        AdminUserDomain adminUserDomain = this.adminUserDomainRepository.createDomain(adminUserParam);
+        return this.serviceTemplate.executeQuery(new AbstractTemplateAction<Object>() {
+            @Override
+            public CallResult<Object> doAction() {
+                return adminUserDomain.findUserById();
+            }
+        });
+    }
+
+    @Override
+    public CallResult update(AdminUserParam adminUserParam) {
+        AdminUserDomain adminUserDomain = this.adminUserDomainRepository.createDomain(adminUserParam);
+        return this.serviceTemplate.execute(new AbstractTemplateAction<Object>() {
+            @Override
+            public CallResult<Object> doAction() {
+                return adminUserDomain.update();
+            }
+        });
+    }
+
 }

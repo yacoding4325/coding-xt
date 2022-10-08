@@ -132,4 +132,48 @@ public class AdminUserDomainRepository {
     public Page<AdminPermission> findPermissionList(int page, int pageSize) {
         return adminPermissionMapper.selectPage(new Page<>(page,pageSize),Wrappers.lambdaQuery());
     }
+
+    public Page<AdminUser> findUserList(int page, int pageSize) {
+        return adminUserMapper.selectPage(new Page<>(page,pageSize),Wrappers.lambdaQuery());
+    }
+
+    public List<AdminRole> findAllRole() {
+        return adminRoleMapper.selectList(Wrappers.lambdaQuery());
+    }
+
+    public void saveUser(AdminUser adminUser) {
+        adminUserMapper.insert(adminUser);
+    }
+
+    public void saveUserRole(Long userId, Integer roleId) {
+        AdminUserRole adminUserRole = new AdminUserRole();
+        adminUserRole.setRoleId(roleId);
+        adminUserRole.setUserId(userId);
+        this.adminUserRoleMapper.insert(adminUserRole);
+    }
+
+    public AdminUser findUserById(Long id) {
+        return adminUserMapper.selectById(id);
+    }
+
+    public void updateUser(AdminUser adminUser) {
+        adminUserMapper.updateById(adminUser);
+    }
+
+    public void deleteUserRoleByUserId(Long userId) {
+        LambdaQueryWrapper<AdminUserRole> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(AdminUserRole::getUserId,userId);
+        this.adminUserRoleMapper.delete(queryWrapper);
+    }
+
+    //按用户ID查找管理员角色ID列表
+    public List<Integer> findAdminRoleIdListByUserId(Long adminUserId) {
+        LambdaQueryWrapper<AdminUserRole> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(AdminUserRole::getUserId, adminUserId);
+        queryWrapper.select(AdminUserRole::getRoleId);
+        List<AdminUserRole> adminUserRoleList = this.adminUserRoleMapper.selectList(queryWrapper);
+        List<Integer> roleIdList = adminUserRoleList.stream().map(AdminUserRole::getRoleId).collect(Collectors.toList());
+        return roleIdList;
+    }
+
 }

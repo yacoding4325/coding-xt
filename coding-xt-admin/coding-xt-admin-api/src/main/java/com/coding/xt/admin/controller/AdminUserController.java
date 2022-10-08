@@ -66,31 +66,31 @@ public class AdminUserController {
         return adminUserService.updatePermission(adminUserParam);
     }
 
-//    @RequestMapping(value = "findPage")
-//    public CallResult findPage(@RequestBody AdminUserParam adminUserParam){
-//        return adminUserService.findPage(adminUserParam);
-//    }
+    @RequestMapping(value = "findPage")
+    public CallResult findPage(@RequestBody AdminUserParam adminUserParam){
+        return adminUserService.findPage(adminUserParam);
+    }
+
+    @RequestMapping(value = "role/all")
+    public CallResult roleAll(){
+        return adminUserService.roleAll();
+    }
 //
-//    @RequestMapping(value = "role/all")
-//    public CallResult roleAll(){
-//        return adminUserService.roleAll();
-//    }
-//
-//    @RequestMapping(value = "add")
-//    public CallResult add(@RequestBody AdminUserParam adminUserParam){
-//        return adminUserService.addUser(adminUserParam);
-//    }
-//
-//
-//    @RequestMapping(value = "findUserById")
-//    public CallResult findUserById(@RequestBody AdminUserParam adminUserParam){
-//        return adminUserService.findUserById(adminUserParam);
-//    }
-//
-//    @RequestMapping(value = "update")
-//    public CallResult update(@RequestBody AdminUserParam adminUserParam){
-//        return adminUserService.update(adminUserParam);
-//    }
+    @RequestMapping(value = "add")
+    public CallResult add(@RequestBody AdminUserParam adminUserParam){
+        return adminUserService.addUser(adminUserParam);
+    }
+
+
+    @RequestMapping(value = "findUserById")
+    public CallResult findUserById(@RequestBody AdminUserParam adminUserParam){
+        return adminUserService.findUserById(adminUserParam);
+    }
+
+    @RequestMapping(value = "update")
+    public CallResult update(@RequestBody AdminUserParam adminUserParam){
+        return adminUserService.update(adminUserParam);
+    }
 //
 //    @RequestMapping(value = "menu/findMenuPage")
 //    public CallResult findMenuPage(@RequestBody AdminUserParam adminUserParam){

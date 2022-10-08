@@ -67,4 +67,14 @@ public interface AdminUserService {
     CallResult findPermissionById(AdminUserParam adminUserParam);
 
     CallResult updatePermission(AdminUserParam adminUserParam);
+
+    CallResult findPage(AdminUserParam adminUserParam);
+
+    CallResult roleAll();
+
+    CallResult addUser(AdminUserParam adminUserParam);
+
+    CallResult findUserById(AdminUserParam adminUserParam);
+
+    CallResult update(AdminUserParam adminUserParam);
 }
