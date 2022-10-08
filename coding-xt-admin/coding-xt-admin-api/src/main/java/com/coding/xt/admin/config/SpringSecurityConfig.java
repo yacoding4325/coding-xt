@@ -37,7 +37,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/subject/**",
                         "/topic/**",
                         "/order/**",
-                        "/user/menu/userMenuList").access("@authService.auth(request,authentication)")
+                        "/user/menu/userMenuList",
+                        "/xt/**").access("@authService.auth(request,authentication)")
                 .anyRequest().authenticated()
                 .and().headers().frameOptions().disable()
                 .and()

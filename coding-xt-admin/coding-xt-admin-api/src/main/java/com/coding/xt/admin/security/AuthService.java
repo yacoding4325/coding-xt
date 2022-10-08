@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
  * @Author yaCoding
  * @create 2022-10-07 下午 4:01
  */
-
 @Component
 public class AuthService {
 
@@ -51,7 +50,7 @@ public class AuthService {
         requestURI = requestURI.replace(contextPath,"");
         Long id = adminUserModel.getId();
         UserThreadLocal.put(id);
-        if ("/user/menu/userMenuList".equals(requestURI)){
+        if ("/user/menu/userMenuList".equals(requestURI) || requestURI.startsWith("/xt")){
             return true;
         }
         return adminUserService.auth(requestURI,id);
