@@ -50,4 +50,15 @@ public class AdminUserServiceImpl extends AbstractService implements AdminUserSe
         });
     }
 
+    @Override
+    public CallResult permissionAll() {
+        AdminUserDomain adminUserDomain = this.adminUserDomainRepository.createDomain(null);
+        return this.serviceTemplate.executeQuery(new AbstractTemplateAction<Object>() {
+            @Override
+            public CallResult<Object> doAction() {
+                return adminUserDomain.permissionAll();
+            }
+        });
+    }
+
 }

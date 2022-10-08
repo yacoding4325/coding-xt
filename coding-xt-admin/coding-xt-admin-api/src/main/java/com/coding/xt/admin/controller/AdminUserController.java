@@ -25,10 +25,10 @@ public class AdminUserController {
     }
 
     //查询所有权限
-//    @RequestMapping(value = "permission/all")
-//    public CallResult permissionAll(){
-//        return adminUserService.permissionAll();
-//    }
+    @RequestMapping(value = "permission/all")
+    public CallResult permissionAll(){
+        return adminUserService.permissionAll();
+    }
 //
 //    //角色添加
 //    @RequestMapping(value = "role/add")

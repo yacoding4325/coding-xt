@@ -79,4 +79,8 @@ public class AdminUserDomainRepository {
     public Page<AdminRole> findRoleList(int page, int pageSize) {
         return adminRoleMapper.selectPage(new Page<>(page,pageSize),Wrappers.lambdaQuery());
     }
+
+    public List<AdminPermission> findAllPermission() {
+        return adminPermissionMapper.selectList(Wrappers.lambdaQuery());
+    }
 }

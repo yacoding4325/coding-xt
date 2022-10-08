@@ -33,4 +33,9 @@ public interface AdminUserService {
      */
     CallResult findRolePage(AdminUserParam adminUserParam);
 
+    /**
+     * 查询所有权限
+     * @return
+     */
+    CallResult permissionAll();
 }

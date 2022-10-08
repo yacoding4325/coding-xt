@@ -79,4 +79,9 @@ public class AdminUserDomain {
         return CallResult.success(listModel);
 
     }
+
+    public CallResult<Object> permissionAll() {
+        List<AdminPermission> allPermission = this.adminUserDomainRepository.findAllPermission();
+        return CallResult.success(allPermission);
+    }
 }
