@@ -8,6 +8,7 @@ import com.coding.xt.admin.service.AdminUserService;
 import com.coding.xt.common.model.CallResult;
 import com.coding.xt.common.service.AbstractTemplateAction;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @Author yaCoding
@@ -57,6 +58,18 @@ public class AdminUserServiceImpl extends AbstractService implements AdminUserSe
             @Override
             public CallResult<Object> doAction() {
                 return adminUserDomain.permissionAll();
+            }
+        });
+    }
+
+    @Override
+    @Transactional
+    public CallResult add(AdminUserParam adminUserParam) {
+        AdminUserDomain adminUserDomain = this.adminUserDomainRepository.createDomain(adminUserParam);
+        return this.serviceTemplate.execute(new AbstractTemplateAction<Object>() {
+            @Override
+            public CallResult<Object> doAction() {
+                return adminUserDomain.add();
             }
         });
     }

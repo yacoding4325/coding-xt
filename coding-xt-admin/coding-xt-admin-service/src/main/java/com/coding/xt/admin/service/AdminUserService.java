@@ -38,4 +38,12 @@ public interface AdminUserService {
      * @return
      */
     CallResult permissionAll();
+
+    /**
+     * 添加角色
+     * @param adminUserParam
+     * @return
+     */
+    CallResult add(AdminUserParam adminUserParam);
+
 }

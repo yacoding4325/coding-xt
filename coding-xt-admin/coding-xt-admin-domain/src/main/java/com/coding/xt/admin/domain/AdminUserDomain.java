@@ -84,4 +84,14 @@ public class AdminUserDomain {
         List<AdminPermission> allPermission = this.adminUserDomainRepository.findAllPermission();
         return CallResult.success(allPermission);
     }
+
+    public CallResult<Object> add() {
+        AdminRole role = new AdminRole();
+        BeanUtils.copyProperties(this.adminUserParam,role);
+        List<Integer> permissionIdList = this.adminUserParam.getPermissionIdList();
+        this.adminUserDomainRepository.saveRole(role);
+        Integer roleId = role.getId();
+        this.adminUserDomainRepository.saveRolePermission(roleId,permissionIdList);
+        return CallResult.success();
+    }
 }

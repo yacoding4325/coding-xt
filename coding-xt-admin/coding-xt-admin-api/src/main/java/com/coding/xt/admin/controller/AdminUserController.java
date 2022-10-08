@@ -31,10 +31,10 @@ public class AdminUserController {
     }
 //
 //    //角色添加
-//    @RequestMapping(value = "role/add")
-//    public CallResult roleAdd(@RequestBody AdminUserParam adminUserParam){
-//        return adminUserService.add(adminUserParam);
-//    }
+    @RequestMapping(value = "role/add")
+    public CallResult roleAdd(@RequestBody AdminUserParam adminUserParam){
+        return adminUserService.add(adminUserParam);
+    }
 //
 //    @RequestMapping(value = "role/findRoleById")
 //    public CallResult findRoleById(@RequestBody AdminUserParam adminUserParam){

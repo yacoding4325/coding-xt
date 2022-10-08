@@ -83,4 +83,17 @@ public class AdminUserDomainRepository {
     public List<AdminPermission> findAllPermission() {
         return adminPermissionMapper.selectList(Wrappers.lambdaQuery());
     }
+
+    public void saveRole(AdminRole role) {
+        this.adminRoleMapper.insert(role);
+    }
+
+    public void saveRolePermission(Integer roleId, List<Integer> permissionIdList) {
+        for (Integer permissionId: permissionIdList) {
+            AdminRolePermission adminRolePermission = new AdminRolePermission();
+            adminRolePermission.setRoleId(roleId);
+            adminRolePermission.setPermissionId(permissionId);
+            this.adminRolePermissionMapper.insert(adminRolePermission);
+        }
+    }
 }
