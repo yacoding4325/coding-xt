@@ -4,74 +4,49 @@
         <!-- 页面meta -->
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>智慧猪管理后台</title>
-        <meta name="description" content="智慧猪管理后台">
-        <meta name="keywords" content="智慧猪管理后台">
+        <title>码神学堂</title>
+        <meta name="description" content="码神学堂">
+        <meta name="keywords" content="码神学堂">
         <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
         <!-- 引入样式 -->
         <link rel="stylesheet" href="../plugins/elementui/index.css">
         <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
         <link rel="stylesheet" href="../css/style.css">
-
-
-        <!-- Theme included stylesheets -->
-        <link href="../plugins/quill/quill.snow.css" rel="stylesheet">
-        <link href="../plugins/quill/quill.bubble.css" rel="stylesheet">
-
-        <!-- Core build with no theme, formatting, non-essential modules -->
-        <link href="../plugins/quill/quill.core.css" rel="stylesheet">
-        <!-- Main Quill library -->
-        <script src="../plugins/quill/quill.js"></script>
-<!--        <script src="../plugins/quill/quill.core.js"></script>-->
     </head>
     <body class="hold-transition">
         <div id="app">
-
             <div class="content-header">
-                <h1>网站管理<small>新闻管理</small></h1>
+                <h1>内容管理<small>课程管理</small></h1>
                 <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
                     <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-                    <el-breadcrumb-item>网站管理</el-breadcrumb-item>
-                    <el-breadcrumb-item>新闻管理</el-breadcrumb-item>
+                    <el-breadcrumb-item>内容管理</el-breadcrumb-item>
+                    <el-breadcrumb-item>课程管理</el-breadcrumb-item>
                 </el-breadcrumb>
             </div>
-
             <div class="app-container">
                 <div class="box">
-
                     <div class="filter-container">
-                        <!--v-model vue的属性 代表和其中的数据进行双向绑定-->
                         <el-input placeholder="课程名称" v-model="pagination.queryString" style="width: 200px;" class="filter-item"></el-input>
-                        <!--@click vue的写法，代表绑定了 vue对象method中的findSearchPage方法 触发的点击事件-->
-                        <el-button @click="findSearchPage()" class="dalfBut">查询11111</el-button>
-                        <el-button type="primary" class="butT" @click="handleCreate()">新建新闻</el-button>
+                        <el-button @click="findPage()" class="dalfBut">查询</el-button>
+                        <el-button type="primary" class="butT" @click="handleCreate()">新建课程</el-button>
                     </div>
-
                     <el-table size="small" current-row-key="id" :data="dataList" stripe highlight-current-row>
                         <el-table-column  align="center" label="序号" prop="id"></el-table-column>
-                        <el-table-column label="编号" align="center" prop="id">
+                        <el-table-column label="课程名称" align="center" prop="courseName">
                         </el-table-column>
-                        <el-table-column label="标题" align="center" prop="title">
+                        <el-table-column label="学科" align="center" prop="subjects">
                         </el-table-column>
-                        <el-table-column label="tab" align="center" prop="tab">
-                            <template scope="scope">
-                                <p v-if="scope.row.tab=='1'">题库</p>
-                                <p v-if="scope.row.tab=='2'">升学</p>
-                                <p v-if="scope.row.tab=='3'">其他</p>
-                            </template>
+                        <el-table-column label="原始价格" align="center" prop="coursePrice">
                         </el-table-column>
-                        <el-table-column label="图片" align="center">
-                            <template slot-scope="scope">
-                                <img :src="scope.row.imageUrl" width="40" height="40" class="head_pic"/>
-                            </template>
+                        <el-table-column label="售卖价格" align="center" prop="courseZhePrice">
                         </el-table-column>
-                        <el-table-column label="创建时间" align="center" prop="createTime">
+                        <el-table-column label="订单时长(天)" align="center" prop="orderTime">
+                        </el-table-column>
+                        <el-table-column label="状态" align="center" prop="courseStatus">
                         </el-table-column>
                         <el-table-column label="操作" align="center">
                             <template slot-scope="scope">
-                                <!--scope.row等于dataList其中的一条数据(编辑按钮所在的行)-->
                                 <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
-                                <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -87,69 +62,97 @@
                     </div>
                     <!-- 新增标签弹层 -->
                     <div class="add-form">
-                        <el-dialog title="新增" :visible.sync="dialogFormVisible">
+                        <el-dialog title="新增学科" :visible.sync="dialogFormVisible">
+                            <el-tabs v-model="activeName" type="card">
+                                <el-tab-pane label="基本信息" name="first">
                                     <el-form ref="dataAddForm" :model="formData" :rules="rules" label-position="right" label-width="100px">
                                         <el-row>
                                             <el-col >
-                                                <el-form-item label="新闻标题" prop="title">
-                                                    <el-input  v-model="formData.title"/>
+                                                <el-form-item label="课程名称" prop="courseName">
+                                                    <el-input  v-model="formData.courseName"/>
                                                 </el-form-item>
                                             </el-col>
                                         </el-row>
                                         <el-row>
                                             <el-col >
-                                                <el-form-item label="新闻概述" prop="summary">
-                                                    <el-input type="textarea" v-model="formData.summary"/>
+                                                <el-form-item label="课程描述" prop="courseDesc">
+                                                    <el-input type="textarea" v-model="formData.courseDesc"/>
                                                 </el-form-item>
                                             </el-col>
                                         </el-row>
                                         <el-row>
                                             <el-col >
-                                                <el-form-item label="图片地址" prop="imageUrl">
-<!--                                                    <el-input  v-model="formData.imageUrl"/>-->
-                                                    <el-upload
-                                                            class="avatar-uploader"
-                                                            action="/lzadmin/news/upload"
-                                                            name="imageFile"
-                                                            :show-file-list="false"
-                                                            :on-success="handleAvatarSuccess"
-                                                            :before-upload="beforeAvatarUpload">
-                                                        <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                                                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                                                    </el-upload>
-
+                                                <el-form-item label="课程原始价格" prop="coursePrice">
+                                                    <el-input  v-model="formData.coursePrice"/>
                                                 </el-form-item>
                                             </el-col>
                                         </el-row>
                                         <el-row>
                                             <el-col >
-                                                <el-form-item label="作者" prop="author">
-                                                    <el-input  v-model="formData.author"/>
+                                                <el-form-item label="课程售卖价格" prop="courseZhePrice">
+                                                    <el-input  v-model="formData.courseZhePrice"/>
                                                 </el-form-item>
                                             </el-col>
                                         </el-row>
                                         <el-row>
                                             <el-col >
-                                                <el-form-item label="新闻内容" prop="content">
-                                                    <quill-editor  v-model="formData.content"></quill-editor>
+                                                <el-form-item label="订单时长(天)" prop="orderTime">
+                                                    <el-input  v-model="formData.orderTime"/>
                                                 </el-form-item>
                                             </el-col>
                                         </el-row>
                                         <el-row>
                                             <el-col >
-                                                <el-form-item label="新闻tab" prop="tab">
-                                                    <el-select v-model="formData.tab" placeholder="请选择">
+                                                <el-form-item label="背景图片地址" prop="imageUrl">
+                                                    <el-input  v-model="formData.imageUrl"/>
+                                                </el-form-item>
+                                            </el-col>
+                                        </el-row>
+                                        <el-row>
+                                            <el-col >
+                                                <el-form-item label="课程状态" prop="courseStatus">
+                                                    <el-select v-model="formData.courseStatus" placeholder="请选择">
                                                         <el-option
-                                                                v-for="item in tabOptions"
-                                                                :key="item.value"
-                                                                :label="item.label"
-                                                                :value="item.value">
+                                                                label="正常"
+                                                                :value="0">
+                                                        </el-option>
+                                                        <el-option
+                                                                label="下架"
+                                                                :value="1">
                                                         </el-option>
                                                     </el-select>
                                                 </el-form-item>
                                             </el-col>
                                         </el-row>
                                     </el-form>
+                                </el-tab-pane>
+                                <el-tab-pane label="学科信息" name="second">
+                                    <div class="checkScrol">
+                                        <table class="datatable">
+                                            <thead>
+                                            <tr>
+                                                <th>选择</th>
+                                                <th>学科ID</th>
+                                                <th>学科名称</th>
+                                                <th>学科年级</th>
+                                                <th>学科学期</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr v-for="c in tableData">
+                                                <td>
+                                                    <input :id="c.id" v-model="subjects" type="checkbox" :value="c.id">
+                                                </td>
+                                                <td><label :for="c.id">{{c.id}}</label></td>
+                                                <td><label :for="c.id">{{c.subjectName}}</label></td>
+                                                <td><label :for="c.id">{{c.subjectGrade}}</label></td>
+                                                <td><label :for="c.id">{{c.subjectTerm}}</label></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </el-tab-pane>
+                            </el-tabs>
                             <div slot="footer" class="dialog-footer">
                                 <el-button @click="dialogFormVisible = false">取消</el-button>
                                 <el-button type="primary" @click="handleAdd()">确定</el-button>
@@ -159,74 +162,93 @@
 
                     <!-- 编辑标签弹层 -->
                     <div class="add-form">
-                        <el-dialog title="编辑" :visible.sync="dialogFormVisibleEdit">
+                        <el-dialog title="编辑课程" :visible.sync="dialogFormVisibleEdit">
+                            <el-tabs v-model="activeName" type="card">
+                                <el-tab-pane label="基本信息" name="first">
                             <el-form ref="dataAddForm" :model="formData" :rules="rules" label-position="right" label-width="100px">
                                 <el-row>
                                     <el-col >
-                                        <el-form-item label="新闻标题" prop="title">
-                                            <el-input  v-model="formData.title"/>
+                                        <el-form-item label="课程名称" prop="courseName">
+                                            <el-input  v-model="formData.courseName"/>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
                                 <el-row>
                                     <el-col >
-                                        <el-form-item label="新闻概述" prop="summary">
-                                            <el-input type="textarea" v-model="formData.summary"/>
+                                        <el-form-item label="课程描述" prop="courseDesc">
+                                            <el-input type="textarea" v-model="formData.courseDesc"/>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
                                 <el-row>
                                     <el-col >
-                                        <el-form-item label="图片地址" prop="imageUrl">
-                                            <el-upload
-                                                    class="avatar-uploader"
-                                                    action="/lzadmin/news/upload"
-                                                    name="imageFile"
-                                                    :show-file-list="false"
-                                                    :on-success="handleAvatarSuccess"
-                                                    :before-upload="beforeAvatarUpload">
-                                                <img v-if="imageUrl" :src="imageUrl" class="avatar">
-                                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                                            </el-upload>
+                                        <el-form-item label="课程原始价格" prop="coursePrice">
+                                            <el-input  v-model="formData.coursePrice"/>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
                                 <el-row>
                                     <el-col >
-                                        <el-form-item label="新闻内容" prop="content">
-                                            <quill-editor  v-model="formData.content"></quill-editor>
+                                        <el-form-item label="课程售卖价格" prop="courseZhePrice">
+                                            <el-input  v-model="formData.courseZhePrice"/>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
                                 <el-row>
                                     <el-col >
-                                        <el-form-item label="新闻tab" prop="tab">
-                                            <el-select v-model="formData.tab" placeholder="请选择">
+                                        <el-form-item label="订单时长(天)" prop="orderTime">
+                                            <el-input  v-model="formData.orderTime"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="背景图片地址" prop="imageUrl">
+                                            <el-input  v-model="formData.imageUrl"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="课程状态" prop="courseStatus">
+                                            <el-select v-model="formData.courseStatus" placeholder="请选择">
                                                 <el-option
-                                                        v-for="item in tabOptions"
-                                                        :key="item.value"
-                                                        :label="item.label"
-                                                        :value="item.value">
+                                                        label="正常"
+                                                        :value="0">
                                                 </el-option>
-                                            </el-select>
-                                        </el-form-item>
-                                    </el-col>
-                                </el-row>
-                                <el-row>
-                                    <el-col >
-                                        <el-form-item label="新闻状态" prop="status">
-                                            <el-select v-model="formData.status" placeholder="请选择">
                                                 <el-option
-                                                        v-for="item in statusOptions"
-                                                        :key="item.value"
-                                                        :label="item.label"
-                                                        :value="item.value">
+                                                        label="下架"
+                                                        :value="1">
                                                 </el-option>
                                             </el-select>
                                         </el-form-item>
                                     </el-col>
                                 </el-row>
                             </el-form>
+                                </el-tab-pane>
+                            <el-tab-pane label="学科信息" name="second">
+                                <div class="checkScrol">
+                                    <table class="datatable">
+                                        <thead>
+                                        <tr>
+                                            <th>选择</th>
+                                            <th>学科ID</th>
+                                            <th>学科名称</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr v-for="c in tableData">
+                                            <td>
+                                                <input :id="c.id" v-model="subjects" type="checkbox" :value="c.id">
+                                            </td>
+                                            <td><label :for="c.id">{{c.id}}</label></td>
+                                            <td><label :for="c.id">{{c.subjectName}}</label></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </el-tab-pane>
+                            </el-tabs>
                             <div slot="footer" class="dialog-footer">
                                 <el-button @click="dialogFormVisibleEdit = false">取消</el-button>
                                 <el-button type="primary" @click="handleEdit()">确定</el-button>
@@ -242,54 +264,11 @@
     <script src="../plugins/elementui/index.js"></script>
     <script type="text/javascript" src="../js/jquery.min.js"></script>
     <script src="../js/axios-0.18.0.js"></script>
-    <script src="../plugins/quill/vue-quill-editor.js"></script>
     <script>
-
         var vue = new Vue({
             el: '#app',
             data:{
                 activeName:'first',
-                editorOption:{
-                    theme: 'snow',
-                    boundary: document.body,
-                    modules: {
-                        toolbar: [
-                            ['bold', 'italic', 'underline', 'strike'],
-                            ['blockquote', 'code-block'],
-                            [{ 'header': 1 }, { 'header': 2 }],
-                            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                            [{ 'script': 'sub' }, { 'script': 'super' }],
-                            [{ 'indent': '-1' }, { 'indent': '+1' }],
-                            [{ 'direction': 'rtl' }],
-                            [{ 'size': ['small', false, 'large', 'huge'] }],
-                            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-                            [{ 'color': [] }, { 'background': [] }],
-                            [{ 'font': [] }],
-                            [{ 'align': [] }],
-                            ['clean'],
-                            ['link', 'image', 'video']
-                        ]
-                    },
-                    placeholder: 'Insert text here ...',
-                    readOnly: false
-                },
-                tabOptions: [{
-                    value: 1,
-                    label: '题库'
-                }, {
-                    value: 2,
-                    label: '升级',
-                }, {
-                    value: 3,
-                    label: '其他'
-                }],
-                statusOptions: [{
-                    value: 0,
-                    label: '正常'
-                }, {
-                    value: 1,
-                    label: '隐藏',
-                }],
                 pagination: {//分页相关模型数据
 					  currentPage: 1,//当前页码
 					  pageSize:10,//每页显示的记录数
@@ -314,37 +293,29 @@
                     }],
                 imageUrl:"",
                 formData: {
-                    topicStar:1,
-                    imageUrl:11
+                    topicStar:1
                 },//表单数据
                 dialogFormVisible: false,//增加表单是否可见
                 dialogFormVisibleEdit:false,
                 rules: {//校验规则
                     subjectName: [{ required: true, message: '必填项', trigger: 'blur' }],
                 }
-
             },
             //钩子函数，VUE对象初始化完成后自动执行
             created() {
                 this.findPage();
             },
             methods: {
-                handleAvatarSuccess(res,file){
-                    //res == CallResult
-                    this.imageUrl = res.result;
-                    this.formData.imageUrl = res.result;
+                handleAvatarSuccess(){
 
                 },
-                beforeAvatarUpload(file){
-                    const isLt2M = file.size / 1024 / 1024 < 2;
-                    if (!isLt2M) {
-                        this.$message.error('上传图片大小不能超过 2MB!');
-                    }
-                    return isLt2M;
+                beforeAvatarUpload(){
+
                 },
                 //编辑
                 handleEdit() {
-                    axios.post("/lzadmin/news/update",this.formData).then((res)=>{
+                    this.formData["subjectIdList"] = this.subjects;
+                    axios.post("/lzadmin/course/updateCourse",this.formData).then((res)=>{
                         if (res.data.success){
                             this.$message({
                                 message: '恭喜你，编辑成功',
@@ -364,7 +335,8 @@
                 },
                 //添加
                 handleAdd () {
-                    axios.post("/lzadmin/news/save",this.formData).then((res)=>{
+                    this.formData["subjectIdList"] = this.subjects;
+                    axios.post("/lzadmin/course/saveCourse",this.formData).then((res)=>{
                         if (res.data.success){
                             this.$message({
                                 message: '恭喜你，添加成功',
@@ -382,15 +354,10 @@
                         }
                     });
                 },
-                findSearchPage(){
-                    this.pagination.currentPage = 1;
-                    this.findPage();
-                },
                 //分页查询
                 findPage() {
-                    //post @RequestBody
-                    axios.post("/lzadmin/news/findPage",this.pagination).then((res)=>{
-                        //res.data = CallResult
+                    const params = {"page":this.pagination.currentPage,"pageSize":this.pagination.pageSize};
+                    axios.post("/lzadmin/course/findPage",params).then((res)=>{
                         if (res.data.success){
                             this.dataList = res.data.result.list;
                             this.pagination.total = res.data.result.size;
@@ -407,20 +374,35 @@
                 // 重置表单
                 resetForm() {
                     this.formData = {};
+                    this.subjects = [];
+                    this.tableData = {};
                 },
                 // 弹出添加窗口
                 handleCreate() {
                     this.resetForm();
                     this.dialogFormVisible = true;
+                    axios.post("/lzadmin/subject/allSubjectList",{"page":1}).then((res)=>{
+                        if (res.data.success){
+                            this.tableData = res.data.result;
+                        }
+                    }).catch((err)=>{
+                        if ('Error: Request failed with status code 403' == err){
+                            this.$message({
+                                message: '无权限，请联系管理员',
+                                type: 'error'
+                            });
+                        }
+                    });
                 },
                 // 弹出编辑窗口
                 handleUpdate(row) {
                     this.resetForm();
                     this.dialogFormVisibleEdit = true;
-                    axios.post("/lzadmin/news/findNewsById",{"id":row.id}).then((res)=>{
+                    axios.post("/lzadmin/course/findCourseById",{"id":row.id}).then((res)=>{
                         if (res.data.success){
                             this.formData  = res.data.result;
-                            this.imageUrl = this.formData.imageUrl;
+                            this.tableData = res.data.result.subjectList;
+                            this.subjects = res.data.result.subjectIdList;
                         }
                     }).catch((err)=>{
                         if ('Error: Request failed with status code 403' == err){
@@ -437,7 +419,6 @@
                     this.findPage();
                 },
             }
-        });
-        Vue.use(window.VueQuillEditor);
+        })
     </script>
 </html>

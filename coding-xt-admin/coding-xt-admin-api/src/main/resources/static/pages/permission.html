@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- 页面meta -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>码神学堂</title>
+        <meta name="description" content="码神学堂">
+        <meta name="keywords" content="码神学堂">
+        <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+        <!-- 引入样式 -->
+        <link rel="stylesheet" href="../plugins/elementui/index.css">
+        <link rel="stylesheet" href="../plugins/font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="../css/style.css">
+    </head>
+    <body class="hold-transition">
+        <div id="app">
+            <div class="content-header">
+                <h1>系统管理<small>权限管理</small></h1>
+                <el-breadcrumb separator-class="el-icon-arrow-right" class="breadcrumb">
+                    <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+                    <el-breadcrumb-item>系统管理</el-breadcrumb-item>
+                    <el-breadcrumb-item>权限管理</el-breadcrumb-item>
+                </el-breadcrumb>
+            </div>
+            <div class="app-container">
+                <div class="box">
+                    <div class="filter-container">
+                        <el-input placeholder="权限名称" v-model="pagination.queryString" style="width: 200px;" class="filter-item"></el-input>
+                        <el-button @click="findPage()" class="dalfBut">查询</el-button>
+                        <el-button type="primary" class="butT" @click="handleCreate()">新建权限</el-button>
+                    </div>
+                    <el-table size="small" current-row-key="id" :data="dataList" stripe highlight-current-row>
+                        <el-table-column  align="center" label="序号" prop="id"></el-table-column>
+                        <el-table-column label="权限名称" align="center" prop="permissionName">
+                        </el-table-column>
+                        <el-table-column label="权限描述" align="center" prop="permissionDesc">
+                        </el-table-column>
+                        <el-table-column label="权限路径" align="center" prop="permissionPath">
+                        </el-table-column>
+                        <el-table-column label="权限关键字" align="center" prop="permissionKeywords">
+                        </el-table-column>
+                        <el-table-column label="操作" align="center">
+                            <template slot-scope="scope">
+                                <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">编辑</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <div class="pagination-container">
+                        <el-pagination
+                            class="pagiantion"
+                            @current-change="handleCurrentChange"
+                            :current-page="pagination.currentPage"
+                            :page-size="pagination.pageSize"
+                            layout="total, prev, pager, next, jumper"
+                            :total="pagination.total">
+                        </el-pagination>
+                    </div>
+                    <!-- 新增标签弹层 -->
+                    <div class="add-form">
+                        <el-dialog title="新增权限" :visible.sync="dialogFormVisible">
+                            <el-tabs v-model="activeName" type="card">
+                                <el-tab-pane label="基本信息" name="first">
+                                    <el-form ref="dataAddForm" :model="formData" :rules="rules" label-position="right" label-width="100px">
+                                        <el-row>
+                                            <el-col >
+                                                <el-form-item label="权限名称" prop="permissionName">
+                                                    <el-input  v-model="formData.permissionName"/>
+                                                </el-form-item>
+                                            </el-col>
+                                        </el-row>
+                                        <el-row>
+                                            <el-col >
+                                                <el-form-item label="权限描述" prop="permissionDesc">
+                                                    <el-input  v-model="formData.permissionDesc"/>
+                                                </el-form-item>
+                                            </el-col>
+                                        </el-row>
+                                        <el-row>
+                                            <el-col >
+                                                <el-form-item label="权限路径" prop="permissionPath">
+                                                    <el-input  v-model="formData.permissionPath"/>
+                                                </el-form-item>
+                                            </el-col>
+                                        </el-row>
+                                        <el-row>
+                                            <el-col >
+                                                <el-form-item label="权限关键字" prop="permissionKeywords">
+                                                    <el-input  v-model="formData.permissionKeywords"/>
+                                                </el-form-item>
+                                            </el-col>
+                                        </el-row>
+                                    </el-form>
+                                </el-tab-pane>
+                            </el-tabs>
+                            <div slot="footer" class="dialog-footer">
+                                <el-button @click="dialogFormVisible = false">取消</el-button>
+                                <el-button type="primary" @click="handleAdd()">确定</el-button>
+                            </div>
+                        </el-dialog>
+                    </div>
+
+                    <!-- 编辑标签弹层 -->
+                    <div class="add-form">
+                        <el-dialog title="编辑权限" :visible.sync="dialogFormVisibleEdit">
+                            <el-tabs v-model="activeName" type="card">
+                                <el-tab-pane label="基本信息" name="first">
+                            <el-form ref="dataAddForm" :model="formData" :rules="rules" label-position="right" label-width="100px">
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="权限名称" prop="permissionName">
+                                            <el-input  v-model="formData.permissionName"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="权限描述" prop="permissionDesc">
+                                            <el-input  v-model="formData.permissionDesc"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="权限路径" prop="permissionPath">
+                                            <el-input  v-model="formData.permissionPath"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                                <el-row>
+                                    <el-col >
+                                        <el-form-item label="权限关键字" prop="permissionKeywords">
+                                            <el-input  v-model="formData.permissionKeywords"/>
+                                        </el-form-item>
+                                    </el-col>
+                                </el-row>
+                            </el-form>
+                            </el-tab-pane>
+                            </el-tabs>
+                            <div slot="footer" class="dialog-footer">
+                                <el-button @click="dialogFormVisibleEdit = false">取消</el-button>
+                                <el-button type="primary" @click="handleEdit()">确定</el-button>
+                            </div>
+                        </el-dialog>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <!-- 引入组件库 -->
+    <script src="../js/vue.js"></script>
+    <script src="../plugins/elementui/index.js"></script>
+    <script type="text/javascript" src="../js/jquery.min.js"></script>
+    <script src="../js/axios-0.18.0.js"></script>
+    <script>
+        var vue = new Vue({
+            el: '#app',
+            data:{
+                activeName:'first',
+                pagination: {//分页相关模型数据
+					  currentPage: 1,//当前页码
+					  pageSize:10,//每页显示的记录数
+					  total:0,//总记录数
+					  queryString:null//查询条件
+				},
+				dataList: [],//当前页要展示的分页列表数据
+                tableData: {},
+                formData: {
+                },//表单数据
+                dialogFormVisible: false,//增加表单是否可见
+                dialogFormVisibleEdit:false,
+                rules: {//校验规则
+                    subjectName: [{ required: true, message: '必填项', trigger: 'blur' }],
+                }
+            },
+            //钩子函数，VUE对象初始化完成后自动执行
+            created() {
+                this.findPage();
+            },
+            methods: {
+                //编辑
+                handleEdit() {
+                    this.formData.permissionIdList = this.permissionIdList;
+                    axios.post("/lzadmin/user/permission/update",this.formData).then((res)=>{
+                        if (res.data.success){
+                            this.$message({
+                                message: '恭喜你，编辑成功',
+                                type: 'success'
+                            });
+                            this.dialogFormVisibleEdit = false;
+                            this.findPage();
+                        }else{
+                            this.$message({
+                                message: res.data.message,
+                                type: 'error'
+                            });
+                        }
+                    });
+                },
+                //添加
+                handleAdd () {
+                    axios.post("/lzadmin/user/permission/add",this.formData).then((res)=>{
+                        if (res.data.success){
+                            this.$message({
+                                message: '恭喜你，添加成功',
+                                type: 'success'
+                            });
+                            this.dialogFormVisible = false;
+                            this.findPage();
+                        }else{
+                            this.$message({
+                                message: res.data.message,
+                                type: 'error'
+                            });
+                        }
+                    }).catch((err)=>{
+                        if ('Error: Request failed with status code 403' == err){
+                            this.$message({
+                                message: '无权限，请联系管理员',
+                                type: 'error'
+                            });
+                        }
+                    });
+                },
+                //分页查询
+                findPage() {
+                    const params = {"page":this.pagination.currentPage,"pageSize":this.pagination.pageSize};
+                    axios.post("/lzadmin/user/permission/findPermissionPage",params).then((res)=>{
+                        if (res.data.success){
+                            this.dataList = res.data.result.list;
+                            this.pagination.total = res.data.result.total;
+                        }else{
+                            this.$message({
+                                message: res.data.message,
+                                type: 'error'
+                            });
+                        }
+                    }).catch((err)=>{
+                        if ('Error: Request failed with status code 403' == err){
+                            this.$message({
+                                message: '无权限，请联系管理员',
+                                type: 'error'
+                            });
+                        }
+                    });
+                },
+                // 重置表单
+                resetForm() {
+                    this.formData = {};
+                    this.tableData = {};
+                },
+                // 弹出添加窗口
+                handleCreate() {
+                    this.resetForm();
+                    this.dialogFormVisible = true;
+                },
+                // 弹出编辑窗口
+                handleUpdate(row) {
+                    this.resetForm();
+                    this.dialogFormVisibleEdit = true;
+                    axios.post("/lzadmin/user/permission/findPermissionById",{"permissionId":row.id}).then((res)=>{
+                        if (res.data.success){
+                            this.formData  = res.data.result;
+                            this.formData.permissionId = res.data.result.id;
+                        }else{
+                            this.$message({
+                                message: res.data.message,
+                                type: 'error'
+                            });
+                        }
+                    }).catch((err)=>{
+                        if ('Error: Request failed with status code 403' == err){
+                            this.$message({
+                                message: '无权限，请联系管理员',
+                                type: 'error'
+                            });
+                        }
+                    });
+                },
+                //切换页码
+                handleCurrentChange(currentPage) {
+                    this.pagination.currentPage = currentPage;
+                    this.findPage();
+                },
+            }
+        })
+    </script>
+</html>

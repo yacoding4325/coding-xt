@@ -91,35 +91,35 @@ public class AdminUserController {
     public CallResult update(@RequestBody AdminUserParam adminUserParam){
         return adminUserService.update(adminUserParam);
     }
-//
-//    @RequestMapping(value = "menu/findMenuPage")
-//    public CallResult findMenuPage(@RequestBody AdminUserParam adminUserParam){
-//        return adminUserService.findMenuPage(adminUserParam);
-//    }
-//
-//    @RequestMapping(value = "menu/all")
-//    public CallResult menuAll(){
-//        return adminUserService.menuAll();
-//    }
-//
-//    @RequestMapping(value = "menu/add")
-//    public CallResult saveMenu(@RequestBody AdminUserParam adminUserParam){
-//        return adminUserService.saveMenu(adminUserParam);
-//    }
-//
-//    @RequestMapping(value = "menu/findMenuById")
-//    public CallResult findMenuById(@RequestBody AdminUserParam adminUserParam){
-//        return adminUserService.findMenuById(adminUserParam);
-//    }
-//
-//    @RequestMapping(value = "menu/update")
-//    public CallResult updateMenu(@RequestBody AdminUserParam adminUserParam){
-//        return adminUserService.updateMenu(adminUserParam);
-//    }
-//
-//    @RequestMapping(value = "menu/userMenuList")
-//    public CallResult userMenuList(){
-//        return adminUserService.userMenuList(new AdminUserParam());
-//    }
-//
+
+    @RequestMapping(value = "menu/findMenuPage")
+    public CallResult findMenuPage(@RequestBody AdminUserParam adminUserParam){
+        return adminUserService.findMenuPage(adminUserParam);
+    }
+
+    @RequestMapping(value = "menu/all")
+    public CallResult menuAll(){
+        return adminUserService.menuAll();
+    }
+
+    @RequestMapping(value = "menu/add")
+    public CallResult saveMenu(@RequestBody AdminUserParam adminUserParam){
+        return adminUserService.saveMenu(adminUserParam);
+    }
+
+    @RequestMapping(value = "menu/findMenuById")
+    public CallResult findMenuById(@RequestBody AdminUserParam adminUserParam){
+        return adminUserService.findMenuById(adminUserParam);
+    }
+
+    @RequestMapping(value = "menu/update")
+    public CallResult updateMenu(@RequestBody AdminUserParam adminUserParam){
+        return adminUserService.updateMenu(adminUserParam);
+    }
+
+    @RequestMapping(value = "menu/userMenuList")
+    public CallResult userMenuList(){
+        return adminUserService.userMenuList(new AdminUserParam());
+    }
+
 }

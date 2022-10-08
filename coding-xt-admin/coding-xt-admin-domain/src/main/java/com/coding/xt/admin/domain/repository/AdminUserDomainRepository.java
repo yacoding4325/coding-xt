@@ -176,4 +176,36 @@ public class AdminUserDomainRepository {
         return roleIdList;
     }
 
+    //查找菜单页
+    public Page<AdminMenu> findMenuPage(int page, int pageSize) {
+        return adminMenuMapper.selectPage(new Page<>(page,pageSize),Wrappers.lambdaQuery());
+    }
+
+
+    public List<AdminMenu> findMenuAll() {
+        return adminMenuMapper.selectList(Wrappers.lambdaQuery());
+    }
+
+    public void saveMenu(AdminMenu menu) {
+        adminMenuMapper.insert(menu);
+    }
+
+    public AdminMenu findMenuById(Integer menuId) {
+        return adminMenuMapper.selectById(menuId);
+    }
+
+    public void updateMenu(AdminMenu menu) {
+        adminMenuMapper.updateById(menu);
+    }
+
+    public List<AdminMenu> findMenuListByRoleIds(List<Integer> roleIdList) {
+        LambdaQueryWrapper<AdminRoleMenu> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.in(AdminRoleMenu::getRoleId,roleIdList);
+        List<AdminRoleMenu> adminRoleMenus = adminRoleMenuMapper.selectList(queryWrapper);
+        List<Integer> menuIdList = adminRoleMenus.stream().map(AdminRoleMenu::getMenuId).collect(Collectors.toList());
+        LambdaQueryWrapper<AdminMenu> queryWrapper1 = Wrappers.lambdaQuery();
+        queryWrapper1.in(AdminMenu::getId,menuIdList);
+        queryWrapper1.orderByAsc(AdminMenu::getMenuSeq);
+        return adminMenuMapper.selectList(queryWrapper1);
+    }
 }

@@ -204,4 +204,71 @@ public class AdminUserServiceImpl extends AbstractService implements AdminUserSe
         });
     }
 
+    @Override
+    public CallResult findMenuPage(AdminUserParam adminUserParam) {
+        AdminUserDomain adminUserDomain = this.adminUserDomainRepository.createDomain(adminUserParam);
+        return this.serviceTemplate.executeQuery(new AbstractTemplateAction<Object>() {
+            @Override
+            public CallResult<Object> doAction() {
+                return adminUserDomain.findMenuPage();
+            }
+        });
+    }
+
+    @Override
+    public CallResult menuAll() {
+        AdminUserDomain adminUserDomain = this.adminUserDomainRepository.createDomain(null);
+        return this.serviceTemplate.executeQuery(new AbstractTemplateAction<Object>() {
+            @Override
+            public CallResult<Object> doAction() {
+                return adminUserDomain.menuAll();
+            }
+        });
+    }
+
+    @Override
+    public CallResult saveMenu(AdminUserParam adminUserParam) {
+        AdminUserDomain adminUserDomain = this.adminUserDomainRepository.createDomain(adminUserParam);
+        return this.serviceTemplate.execute(new AbstractTemplateAction<Object>() {
+            @Override
+            public CallResult<Object> doAction() {
+                return adminUserDomain.saveMenu();
+            }
+        });
+    }
+
+    @Override
+    public CallResult findMenuById(AdminUserParam adminUserParam) {
+        AdminUserDomain adminUserDomain = this.adminUserDomainRepository.createDomain(adminUserParam);
+        return this.serviceTemplate.executeQuery(new AbstractTemplateAction<Object>() {
+            @Override
+            public CallResult<Object> doAction() {
+                return adminUserDomain.findMenuById();
+            }
+        });
+    }
+
+    @Override
+    public CallResult updateMenu(AdminUserParam adminUserParam) {
+        AdminUserDomain adminUserDomain = this.adminUserDomainRepository.createDomain(adminUserParam);
+        return this.serviceTemplate.execute(new AbstractTemplateAction<Object>() {
+            @Override
+            public CallResult<Object> doAction() {
+                return adminUserDomain.updateMenu();
+            }
+        });
+    }
+
+    @Override
+    public CallResult userMenuList(AdminUserParam adminUserParam) {
+        AdminUserDomain adminUserDomain = this.adminUserDomainRepository.createDomain(adminUserParam);
+        return this.serviceTemplate.executeQuery(new AbstractTemplateAction<Object>() {
+            @Override
+            public CallResult<Object> doAction() {
+                return adminUserDomain.userMenuList();
+            }
+        });
+    }
+
+
 }

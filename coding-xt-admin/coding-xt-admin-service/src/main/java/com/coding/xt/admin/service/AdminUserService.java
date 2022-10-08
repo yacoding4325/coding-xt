@@ -77,4 +77,46 @@ public interface AdminUserService {
     CallResult findUserById(AdminUserParam adminUserParam);
 
     CallResult update(AdminUserParam adminUserParam);
+
+    /**
+     * 查找菜单页面
+     * @param adminUserParam
+     * @return
+     */
+    CallResult findMenuPage(AdminUserParam adminUserParam);
+
+    /**
+     * 菜单全部
+     * @return
+     */
+    CallResult menuAll();
+
+    /**
+     * 保存菜单
+     * @param adminUserParam
+     * @return
+     */
+    CallResult saveMenu(AdminUserParam adminUserParam);
+
+    /**
+     * 按ID查找菜单
+     * @param adminUserParam
+     * @return
+     */
+    CallResult findMenuById(AdminUserParam adminUserParam);
+
+    /**
+     * 更新菜单
+     * @param adminUserParam
+     * @return
+     */
+    CallResult updateMenu(AdminUserParam adminUserParam);
+
+    /**
+     * 用户菜单列表
+     * @param adminUserParam
+     * @return
+     */
+    CallResult userMenuList(AdminUserParam adminUserParam);
+
 }
