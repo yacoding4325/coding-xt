@@ -74,4 +74,27 @@ public class AdminUserServiceImpl extends AbstractService implements AdminUserSe
         });
     }
 
+    @Override
+    public CallResult findRoleById(AdminUserParam adminUserParam) {
+        AdminUserDomain adminUserDomain = this.adminUserDomainRepository.createDomain(adminUserParam);
+        return this.serviceTemplate.executeQuery(new AbstractTemplateAction<Object>() {
+            @Override
+            public CallResult<Object> doAction() {
+                return adminUserDomain.findRoleById();
+            }
+        });
+    }
+
+    @Override
+    @Transactional
+    public CallResult updateRole(AdminUserParam adminUserParam) {
+        AdminUserDomain adminUserDomain = this.adminUserDomainRepository.createDomain(adminUserParam);
+        return this.serviceTemplate.execute(new AbstractTemplateAction<Object>() {
+            @Override
+            public CallResult<Object> doAction() {
+                return adminUserDomain.updateRole();
+            }
+        });
+    }
+
 }

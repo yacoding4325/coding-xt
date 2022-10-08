@@ -35,16 +35,16 @@ public class AdminUserController {
     public CallResult roleAdd(@RequestBody AdminUserParam adminUserParam){
         return adminUserService.add(adminUserParam);
     }
-//
-//    @RequestMapping(value = "role/findRoleById")
-//    public CallResult findRoleById(@RequestBody AdminUserParam adminUserParam){
-//        return adminUserService.findRoleById(adminUserParam);
-//    }
-//
-//    @RequestMapping(value = "role/update")
-//    public CallResult updateRole(@RequestBody AdminUserParam adminUserParam){
-//        return adminUserService.updateRole(adminUserParam);
-//    }
+
+    @RequestMapping(value = "role/findRoleById")
+    public CallResult findRoleById(@RequestBody AdminUserParam adminUserParam){
+        return adminUserService.findRoleById(adminUserParam);
+    }
+
+    @RequestMapping(value = "role/update")
+    public CallResult updateRole(@RequestBody AdminUserParam adminUserParam){
+        return adminUserService.updateRole(adminUserParam);
+    }
 //
 //    @RequestMapping(value = "permission/findPermissionPage")
 //    public CallResult findPermissionPage(@RequestBody AdminUserParam adminUserParam){

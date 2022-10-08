@@ -94,4 +94,31 @@ public class AdminUserDomain {
         this.adminUserDomainRepository.saveRolePermission(roleId,permissionIdList);
         return CallResult.success();
     }
+
+    public CallResult<Object> findRoleById() {
+        Integer roleId = this.adminUserParam.getRoleId();
+        //查询角色
+        AdminRole role = this.adminUserDomainRepository.findRoleId(roleId);
+
+        //根据id查询选中的权限id 列表
+        List<Integer> permissionIdList = this.adminUserDomainRepository.findPermissionIdListByRoleId(roleId);
+        Map<String,Object> result = new HashMap<>();
+        result.put("role",role);
+        result.put("permissionIdList",permissionIdList);
+        return CallResult.success(result);
+
+    }
+
+    public CallResult<Object> updateRole() {
+        AdminRole role = new AdminRole();
+        BeanUtils.copyProperties(this.adminUserParam,role);
+        role.setId(this.adminUserParam.getRoleId());
+        List<Integer> permissionIdList = this.adminUserParam.getPermissionIdList();
+        this.adminUserDomainRepository.updateRole(role);
+        Integer roleId = role.getId();
+        //先删除关联关系
+        this.adminUserDomainRepository.deleteRolePermissionByRoleId(roleId);
+        this.adminUserDomainRepository.saveRolePermission(roleId,permissionIdList);
+        return CallResult.success();
+    }
 }

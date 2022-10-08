@@ -96,4 +96,24 @@ public class AdminUserDomainRepository {
             this.adminRolePermissionMapper.insert(adminRolePermission);
         }
     }
+
+    public AdminRole findRoleId(Integer roleId) {
+        return adminRoleMapper.selectById(roleId);
+    }
+
+    public List<Integer> findPermissionIdListByRoleId(Integer roleId) {
+        LambdaQueryWrapper<AdminRolePermission> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(AdminRolePermission::getRoleId,roleId);
+        return adminRolePermissionMapper.selectList(queryWrapper).stream().map(AdminRolePermission::getPermissionId).collect(Collectors.toList());
+    }
+
+    public void updateRole(AdminRole role) {
+        this.adminRoleMapper.updateById(role);
+    }
+
+    public void deleteRolePermissionByRoleId(Integer roleId) {
+        LambdaQueryWrapper<AdminRolePermission> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(AdminRolePermission::getRoleId,roleId);
+        this.adminRolePermissionMapper.delete(queryWrapper);
+    }
 }

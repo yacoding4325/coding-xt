@@ -46,4 +46,17 @@ public interface AdminUserService {
      */
     CallResult add(AdminUserParam adminUserParam);
 
+    /**
+     * 查找角色ID
+     * @param adminUserParam
+     * @return
+     */
+    CallResult findRoleById(AdminUserParam adminUserParam);
+
+    /**
+     * 更新角色
+     * @param adminUserParam
+     * @return
+     */
+    CallResult updateRole(AdminUserParam adminUserParam);
 }
