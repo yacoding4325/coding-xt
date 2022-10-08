@@ -116,4 +116,20 @@ public class AdminUserDomainRepository {
         queryWrapper.eq(AdminRolePermission::getRoleId,roleId);
         this.adminRolePermissionMapper.delete(queryWrapper);
     }
+
+    public void savePermission(AdminPermission adminPermission) {
+        adminPermissionMapper.insert(adminPermission);
+    }
+
+    public void updatePermission(AdminPermission adminPermission) {
+        adminPermissionMapper.updateById(adminPermission);
+    }
+
+    public AdminPermission findPermissionById(Integer permissionId) {
+        return adminPermissionMapper.selectById(permissionId);
+    }
+
+    public Page<AdminPermission> findPermissionList(int page, int pageSize) {
+        return adminPermissionMapper.selectPage(new Page<>(page,pageSize),Wrappers.lambdaQuery());
+    }
 }

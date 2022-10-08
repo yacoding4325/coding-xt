@@ -45,27 +45,27 @@ public class AdminUserController {
     public CallResult updateRole(@RequestBody AdminUserParam adminUserParam){
         return adminUserService.updateRole(adminUserParam);
     }
-//
-//    @RequestMapping(value = "permission/findPermissionPage")
-//    public CallResult findPermissionPage(@RequestBody AdminUserParam adminUserParam){
-//        return adminUserService.findPermissionPage(adminUserParam);
-//    }
-//
-//    @RequestMapping(value = "permission/add")
-//    public CallResult addPermission(@RequestBody AdminUserParam adminUserParam){
-//        return adminUserService.addPermission(adminUserParam);
-//    }
-//
-//    @RequestMapping(value = "permission/findPermissionById")
-//    public CallResult findPermissionById(@RequestBody AdminUserParam adminUserParam){
-//        return adminUserService.findPermissionById(adminUserParam);
-//    }
-//
-//    @RequestMapping(value = "permission/update")
-//    public CallResult updatePermission(@RequestBody AdminUserParam adminUserParam){
-//        return adminUserService.updatePermission(adminUserParam);
-//    }
-//
+
+    @RequestMapping(value = "permission/findPermissionPage")
+    public CallResult findPermissionPage(@RequestBody AdminUserParam adminUserParam){
+        return adminUserService.findPermissionPage(adminUserParam);
+    }
+
+    @RequestMapping(value = "permission/add")
+    public CallResult addPermission(@RequestBody AdminUserParam adminUserParam){
+        return adminUserService.addPermission(adminUserParam);
+    }
+
+    @RequestMapping(value = "permission/findPermissionById")
+    public CallResult findPermissionById(@RequestBody AdminUserParam adminUserParam){
+        return adminUserService.findPermissionById(adminUserParam);
+    }
+
+    @RequestMapping(value = "permission/update")
+    public CallResult updatePermission(@RequestBody AdminUserParam adminUserParam){
+        return adminUserService.updatePermission(adminUserParam);
+    }
+
 //    @RequestMapping(value = "findPage")
 //    public CallResult findPage(@RequestBody AdminUserParam adminUserParam){
 //        return adminUserService.findPage(adminUserParam);

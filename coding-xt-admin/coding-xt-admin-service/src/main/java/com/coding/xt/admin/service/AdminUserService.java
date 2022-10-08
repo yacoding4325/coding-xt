@@ -59,4 +59,12 @@ public interface AdminUserService {
      * @return
      */
     CallResult updateRole(AdminUserParam adminUserParam);
+
+    CallResult findPermissionPage(AdminUserParam adminUserParam);
+
+    CallResult addPermission(AdminUserParam adminUserParam);
+
+    CallResult findPermissionById(AdminUserParam adminUserParam);
+
+    CallResult updatePermission(AdminUserParam adminUserParam);
 }
