@@ -36,5 +36,4 @@ public interface CourseService {
      * @return
      */
     CallResult findPage(CourseParam courseParam);
-
 }

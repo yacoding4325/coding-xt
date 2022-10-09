@@ -353,6 +353,13 @@
                             this.dialogFormVisibleEdit = false;
                             this.findPage();
                         }
+                    }).catch((err)=>{
+                        if ('Error: Request failed with status code 403' == err){
+                            this.$message({
+                                message: '无权限，请联系管理员',
+                                type: 'error'
+                            });
+                        }
                     });
                 },
                 //添加
@@ -365,6 +372,13 @@
                             });
                             this.dialogFormVisible = false;
                             this.findPage();
+                        }
+                    }).catch((err)=>{
+                        if ('Error: Request failed with status code 403' == err){
+                            this.$message({
+                                message: '无权限，请联系管理员',
+                                type: 'error'
+                            });
                         }
                     });
                 },
@@ -380,6 +394,13 @@
                         if (res.data.success){
                             this.dataList = res.data.result.list;
                             this.pagination.total = res.data.result.size;
+                        }
+                    }).catch((err)=>{
+                        if ('Error: Request failed with status code 403' == err){
+                            this.$message({
+                                message: '无权限，请联系管理员',
+                                type: 'error'
+                            });
                         }
                     });
                 },
@@ -400,6 +421,13 @@
                         if (res.data.success){
                             this.formData  = res.data.result;
                             this.imageUrl = this.formData.imageUrl;
+                        }
+                    }).catch((err)=>{
+                        if ('Error: Request failed with status code 403' == err){
+                            this.$message({
+                                message: '无权限，请联系管理员',
+                                type: 'error'
+                            });
                         }
                     });
                 },

@@ -214,5 +214,4 @@ public class CourseDomain {
         courseModel.setSubjectList(this.courseDomainRepository.createSubjectDomain(null).findAllSubjectModelList());
         return CallResult.success(courseModel);
     }
-
 }

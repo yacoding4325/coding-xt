@@ -95,7 +95,10 @@
             },
         created:function () {
             axios.post("/lzadmin/user/userInfo").then((res)=>{
-                this.username = res.data;
+                this.username = res.data.result;
+            });
+            axios.post("/lzadmin/user/menu/userMenuList").then((res)=>{
+                this.menuList = res.data.result;
             })
         },
         data:{
@@ -186,6 +189,37 @@
                             "path": "/4-3",
                             "title": "用户管理",
                             "linkUrl":"user.html",
+                            "children":[]
+                        },
+                    ]
+                },
+                {
+                    "path": "5",
+                    "title": "系统管理",
+                    "icon":"fa-tty",
+                    "children": [
+                        {
+                            "path": "/5-1",
+                            "title": "角色管理",
+                            "linkUrl":"role.html",
+                            "children":[]
+                        },
+                        {
+                            "path": "/5-2",
+                            "title": "权限管理",
+                            "linkUrl":"permission.html",
+                            "children":[]
+                        },
+                        {
+                            "path": "/5-3",
+                            "title": "用户管理",
+                            "linkUrl":"user.html",
+                            "children":[]
+                        },
+                        {
+                            "path": "/5-4",
+                            "title": "菜单管理",
+                            "linkUrl":"menu.html",
                             "children":[]
                         },
                     ]
