@@ -6,7 +6,10 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.coding.web.domain.repository.UserHistoryDomainRepository;
 import com.coding.xt.pojo.UserHistory;
 import com.coding.xt.web.dao.UserHistoryMapper;
+import com.coding.xt.web.model.SubjectModel;
 import com.coding.xt.web.model.params.UserHistoryParam;
+
+import java.util.List;
 
 /**
  * @Author yaCoding
@@ -42,5 +45,9 @@ public class UserHistoryDomain {
 
     public void updateUserHistoryProgress(Long userHistoryId) {
         userHistoryDomainRepository.updateUserHistoryProgress(userHistoryId);
+    }
+
+    public Integer countUserHistoryBySubjectList(Long userId, List<SubjectModel> subjectInfoByCourseId) {
+        return userHistoryDomainRepository.countUserHistoryBySubjectList(userId,subjectInfoByCourseId);
     }
 }

@@ -7,10 +7,14 @@ import com.coding.web.domain.UserHistoryDomain;
 import com.coding.xt.pojo.UserHistory;
 import com.coding.xt.web.dao.UserCourseMapper;
 import com.coding.xt.web.dao.UserHistoryMapper;
+import com.coding.xt.web.model.SubjectModel;
 import com.coding.xt.web.model.params.UserHistoryParam;
+import net.sf.jsqlparser.expression.operators.relational.LikeExpression;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Author yaCoding
@@ -58,4 +62,12 @@ public class UserHistoryDomainRepository {
         this.userHistoryMapper.update(null, update);
     }
 
+    public Integer countUserHistoryBySubjectList(Long userId, List<SubjectModel> subjectInfoByCourseId) {
+        //计算 课程的学习次数 课程所包含的 学科 学习的次数 ，练习的次数
+        List<Long> subjectIdList = subjectInfoByCourseId.stream().map(SubjectModel::getId).collect(Collectors.toList());
+        LambdaQueryWrapper<UserHistory> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(UserHistory::getUserId,userId);
+        queryWrapper.in(UserHistory::getSubjectId,subjectIdList);
+        return this.userHistoryMapper.selectCount(queryWrapper);
+    }
 }

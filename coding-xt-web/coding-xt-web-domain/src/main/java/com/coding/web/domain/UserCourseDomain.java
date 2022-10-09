@@ -59,4 +59,8 @@ public class UserCourseDomain {
             this.userCourseDomainRepository.updateUserCourse(course);
         }
     }
+
+    public List<UserCourse> findUserCourseList(Long userId) {
+        return userCourseDomainRepository.findUserCourseList(userId);
+    }
 }

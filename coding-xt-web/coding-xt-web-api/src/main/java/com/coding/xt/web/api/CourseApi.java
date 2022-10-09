@@ -53,4 +53,11 @@ public class CourseApi {
         return courseService.myCoupon(courseParam);
     }
 
+    //查询我的课程
+    @PostMapping(value = "myCourse")
+    public CallResult myCourse(){
+        CourseParam courseParam = new CourseParam();
+        return courseService.myCourse(courseParam);
+    }
+
 }

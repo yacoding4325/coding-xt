@@ -67,4 +67,10 @@ public class UserCourseDomainRepository {
         updateWrapper.set(UserCourse::getExpireTime,course.getExpireTime());
         userCourseMapper.update(null, updateWrapper);
     }
+
+    public List<UserCourse> findUserCourseList(Long userId) {
+        LambdaQueryWrapper<UserCourse> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserCourse::getUserId,userId);
+        return userCourseMapper.selectList(queryWrapper);
+    }
 }
