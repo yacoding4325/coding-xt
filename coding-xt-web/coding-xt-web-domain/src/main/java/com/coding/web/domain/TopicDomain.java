@@ -1,11 +1,13 @@
 package com.coding.web.domain;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.coding.web.domain.repository.TopicDomainRepository;
 import com.coding.xt.common.enums.TopicType;
 import com.coding.xt.common.login.UserThreadLocal;
 import com.coding.xt.common.model.BusinessCodeEnum;
 import com.coding.xt.common.model.CallResult;
+import com.coding.xt.common.model.ListPageModel;
 import com.coding.xt.common.model.topic.ContentAndImage;
 import com.coding.xt.common.model.topic.FillBlankChoice;
 import com.coding.xt.pojo.*;
@@ -430,9 +432,7 @@ public class TopicDomain {
         }
 
 
-
         TopicSubmitModel topicSubmitModel = new TopicSubmitModel();
-
         topicSubmitModel.setTopicType(topicType);
         //返回的是 正确答案
         topicSubmitModel.setAnswer(topicAnswer);
@@ -470,4 +470,84 @@ public class TopicDomain {
         map.put("topic",topicModelView);
         return CallResult.success(map);
     }
+
+    public CallResult<Object> practiceHistory() {
+        Long userId = UserThreadLocal.get();
+        Integer page = this.topicParam.getPage();
+        Integer pageSize = this.topicParam.getPageSize();
+        Page<UserHistory> userHistoryPage = this.topicDomainRepository.createUserHistoryDomain(null).findUserHistoryList(userId,page,pageSize);
+        List<UserHistory> userHistoryList = userHistoryPage.getRecords();
+        List<UserHistoryModel> userHistoryModelList = new ArrayList<>();
+        for (UserHistory userHistory : userHistoryList) {
+            UserHistoryModel userHistoryModel = new UserHistoryModel();
+            userHistoryModel.setId(userHistory.getId());
+            userHistoryModel.setCreateTime(new DateTime(userHistory.getCreateTime()).toString("yyyy-MM-dd HH:mm:ss"));
+            userHistoryModel.setHistoryStatus(userHistory.getHistoryStatus());
+            SubjectModel subject = this.topicDomainRepository.createSubjectDomain(null).findSubject(userHistory.getSubjectId());
+            userHistoryModel.setSubjectName(subject.getSubjectName()+" "+subject.getSubjectGrade()+" "+subject.getSubjectTerm());
+            userHistoryModel.setSubjectId(subject.getId());
+            userHistoryModel.setFinishTime(userHistory.getFinishTime() == 0 ? "":new DateTime(userHistory.getFinishTime()).toString("yyyy-MM-dd HH:mm:ss"));
+            List<Integer> subjectUnitList = JSON.parseArray(userHistory.getSubjectUnits(), Integer.class);
+            userHistoryModel.setSubjectUnitList(subjectUnitList);
+            userHistoryModel.setUseTime(userHistory.getFinishTime() == 0 ? "":useTime(userHistory.getFinishTime(),userHistory.getCreateTime()));
+            List<Long> courseIdList = this.topicDomainRepository.createCourseDomain(null).findCourseIdListBySubjectId(subject.getId());
+            int count = this.topicDomainRepository.createUserCourseDomain(null).countUserCourseInCourseIdList(userId,courseIdList,System.currentTimeMillis());
+            if (count > 0){
+                //判断是否此学习 还在购买的 有效期内
+                userHistoryModel.setStatus(0);
+            }else{
+                userHistoryModel.setStatus(1);
+            }
+            userHistoryModelList.add(userHistoryModel);
+        }
+        ListPageModel<UserHistoryModel> listModel = new ListPageModel<>();
+        listModel.setList(userHistoryModelList);
+        listModel.setSize(userHistoryPage.getTotal());
+        listModel.setPage(page);
+        listModel.setPageSize(pageSize);
+        listModel.setPageCount(userHistoryPage.getPages());
+        return CallResult.success(listModel);
+    }
+
+    //用户问题查找
+    public CallResult<Object> userProblemSearch() {
+        int page = this.topicParam.getPage();
+        int pageSize = this.topicParam.getPageSize();
+        String subjectName = this.topicParam.getSubjectName();
+        String subjectGrade = this.topicParam.getSubjectGrade();
+        String subjectTerm = this.topicParam.getSubjectTerm();
+        Long userId = UserThreadLocal.get();
+        //去查询 是否有 查询的学科条件
+        Long searchSubjectId = this.topicDomainRepository.createSubjectDomain(null).findSubjectByInfo(subjectName,subjectGrade,subjectTerm);
+        Page<UserProblem> userProblemListPage = null;
+        if (searchSubjectId == null){
+            userProblemListPage = this.topicDomainRepository.createUserProblem(null).findUserProblemList(userId, ErrorStatus.NO_SOLVE.getCode(),page,pageSize);
+        }else{
+            userProblemListPage = this.topicDomainRepository.createUserProblem(null).findUserProblemListBySubjectId(searchSubjectId,userId, ErrorStatus.NO_SOLVE.getCode(),page,pageSize);
+        }
+        List<UserProblemModel> userProblemModelList = new ArrayList<>();
+        List<UserProblem> userProblemList = userProblemListPage.getRecords();
+        for (UserProblem userProblem : userProblemList){
+            Long topicId = userProblem.getTopicId();
+            Long subjectId = userProblem.getSubjectId();
+            Topic topic = this.topicDomainRepository.findTopicById(topicId);
+            TopicModelView topicModelView = getTopicModelView(topic);
+            SubjectModel subject = this.topicDomainRepository.createSubjectDomain(null).findSubject(subjectId);
+            UserProblemModel userProblemModel = new UserProblemModel();
+            userProblemModel.setErrorCount(userProblem.getErrorCount());
+            userProblemModel.setSubject(subject);
+            userProblemModel.setTopic(topicModelView);
+            userProblemModel.setProblemId(userProblem.getId());
+            userProblemModel.setErrorAnswer(userProblem.getErrorAnswer());
+            userProblemModel.setErrorTime(new DateTime(userProblem.getErrorTime()).toString("yyyy-MM-dd HH:mm:ss"));
+            userProblemModelList.add(userProblemModel);
+        }
+        ListPageModel<UserProblemModel> listPageModel = new ListPageModel<>();
+        listPageModel.setList(userProblemModelList);
+        listPageModel.setPage(page);
+        listPageModel.setPageCount(pageSize);
+        listPageModel.setSize((int) userProblemListPage.getTotal());
+        return CallResult.success(listPageModel);
+    }
+
 }

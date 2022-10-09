@@ -1,5 +1,6 @@
 package com.coding.web.domain;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.coding.web.domain.repository.UserProblemDomainRepository;
 import com.coding.xt.pojo.UserProblem;
 import com.coding.xt.web.model.params.UserProblemParam;
@@ -30,4 +31,13 @@ public class UserProblemDomain {
     public void updateUserProblemErrorCount(Long userId, Long topicId, String answer) {
         userProblemDomainRepository.updateUserProblemErrorCount(userId,topicId,answer);
     }
+
+    public Page<UserProblem> findUserProblemList(Long userId, int errorStatus, int page, int pageSize) {
+        return userProblemDomainRepository.findUserProblemList(userId,errorStatus,page,pageSize);
+    }
+
+    public Page<UserProblem> findUserProblemListBySubjectId(Long searchSubjectId, Long userId, int errorStatus, int page, int pageSize) {
+        return userProblemDomainRepository.findUserProblemListBySubjectId(searchSubjectId,userId,errorStatus,page,pageSize);
+    }
+
 }

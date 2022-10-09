@@ -90,4 +90,17 @@ public class SubjectDomain {
         BeanUtils.copyProperties(subject, target);
         return target;
     }
+
+    public Long findSubjectByInfo(String subjectName, String subjectGrade, String subjectTerm) {
+        if ("全部".equals(subjectName)){
+            subjectName = null;
+        }
+        if ("全部".equals(subjectGrade)){
+            subjectGrade = null;
+        }
+        if ("全部".equals(subjectTerm)){
+            subjectTerm = null;
+        }
+        return this.subjectDomainRepository.findSubjectByInfo(subjectName,subjectGrade,subjectTerm);
+    }
 }

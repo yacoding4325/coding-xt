@@ -3,6 +3,7 @@ package com.coding.web.domain;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.coding.web.domain.repository.UserHistoryDomainRepository;
 import com.coding.xt.pojo.UserHistory;
 import com.coding.xt.web.dao.UserHistoryMapper;
@@ -49,5 +50,9 @@ public class UserHistoryDomain {
 
     public Integer countUserHistoryBySubjectList(Long userId, List<SubjectModel> subjectInfoByCourseId) {
         return userHistoryDomainRepository.countUserHistoryBySubjectList(userId,subjectInfoByCourseId);
+    }
+
+    public Page<UserHistory> findUserHistoryList(Long userId, Integer page, Integer pageSize) {
+        return userHistoryDomainRepository.findUserHistoryByUserId(userId,page,pageSize);
     }
 }

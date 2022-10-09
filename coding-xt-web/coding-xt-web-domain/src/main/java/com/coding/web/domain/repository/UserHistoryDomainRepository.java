@@ -3,6 +3,7 @@ package com.coding.web.domain.repository;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.coding.web.domain.UserHistoryDomain;
 import com.coding.xt.pojo.UserHistory;
 import com.coding.xt.web.dao.UserCourseMapper;
@@ -69,5 +70,11 @@ public class UserHistoryDomainRepository {
         queryWrapper.eq(UserHistory::getUserId,userId);
         queryWrapper.in(UserHistory::getSubjectId,subjectIdList);
         return this.userHistoryMapper.selectCount(queryWrapper);
+    }
+
+    public Page<UserHistory> findUserHistoryByUserId(Long userId, Integer page, Integer pageSize) {
+        LambdaQueryWrapper<UserHistory> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(UserHistory::getUserId,userId);
+        return userHistoryMapper.selectPage(new Page<>(page,pageSize), queryWrapper);
     }
 }

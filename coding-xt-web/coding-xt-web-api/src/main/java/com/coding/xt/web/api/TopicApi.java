@@ -32,5 +32,17 @@ public class TopicApi {
         return topicService.jump(topicParam);
     }
 
+    //练习--实践历史
+    @PostMapping(value = "practiceHistory")
+    public CallResult practiceHistory(@RequestBody TopicParam topicParam){
+        return topicService.practiceHistory(topicParam);
+    }
+
+    //用户问题查询
+    @PostMapping(value = "userProblemSearch")
+    public CallResult userProblemSearch(@RequestBody TopicParam topicParam){
+        return topicService.userProblemSearch(topicParam);
+    }
+
 }
 

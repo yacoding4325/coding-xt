@@ -29,4 +29,18 @@ public interface TopicService {
      * @return
      */
     CallResult jump(TopicParam topicParam);
+
+    /**
+     * 实践历史
+     * @param topicParam
+     * @return
+     */
+    CallResult practiceHistory(TopicParam topicParam);
+
+    /**
+     * 用户历史问题查询
+     * @param topicParam
+     * @return
+     */
+    CallResult userProblemSearch(TopicParam topicParam);
 }

@@ -3,6 +3,7 @@ package com.coding.web.domain.repository;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.coding.web.domain.UserProblemDomain;
 import com.coding.xt.pojo.UserProblem;
 import com.coding.xt.web.dao.UserProblemMapper;
@@ -47,4 +48,20 @@ public class UserProblemDomainRepository {
         //update table set error_count=error_count+1 where user_id=111 and topic_id=222
         userProblemMapper.update(null, update);
     }
+
+    public Page<UserProblem> findUserProblemList(Long userId, int errorStatus, int page, int pageSize) {
+        LambdaQueryWrapper<UserProblem> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(UserProblem::getUserId,userId);
+        queryWrapper.eq(UserProblem::getErrorStatus,errorStatus);
+        return userProblemMapper.selectPage(new Page<>(page,pageSize), queryWrapper);
+    }
+
+    public Page<UserProblem> findUserProblemListBySubjectId(Long searchSubjectId, Long userId, int errorStatus, int page, int pageSize) {
+        LambdaQueryWrapper<UserProblem> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(UserProblem::getUserId,userId);
+        queryWrapper.eq(UserProblem::getErrorStatus,errorStatus);
+        queryWrapper.eq(UserProblem::getSubjectId,searchSubjectId);
+        return userProblemMapper.selectPage(new Page<>(page,pageSize), queryWrapper);
+    }
+
 }
